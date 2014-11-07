@@ -45,6 +45,8 @@ and to alter it and redistribute it freely, subject to the following restriction
 using namespace cv;
 using namespace TUIO;
 using namespace std;
+
+int g_imageDisplayMargin=10; // @Gawhary: Margins between multi-images in one window
 int g_min=55;         //Min threeshold for selection of pixels near interaction zone. Divided by 10000.
 int g_max=230;         //Max threeshold for selection of pixels near interaction zone. Divided by 10000.
 int g_maxBlob=50;       //Max blob area for filter. NOT IMPLEMENTED
@@ -223,7 +225,7 @@ void saveParameters(int a,void* param)
 void callBackPoint(int a,void* param)
 {
     calibrator *MyCal=(calibrator*) param;
-    MyCal->pointCalBegin("RGB");
+    MyCal->pointCalBegin("Tracker");
 }
 void callBackAgrandar(int a)
 {
@@ -311,23 +313,25 @@ int main( int argc, char* argv[] )
         return -1;
     }
 
-    namedWindow("RGB",(0 | CV_GUI_NORMAL));
-    namedWindow("To Blobs",(0 | CV_GUI_NORMAL));
-    namedWindow("Background",(0 | CV_GUI_NORMAL));
-    namedWindow("Mask",(0 | CV_GUI_NORMAL));
-    namedWindow("Plano",(0 | CV_GUI_NORMAL));
+    namedWindow("Tracker",(0 | CV_GUI_NORMAL));
+    //namedWindow("To Blobs",(0 | CV_GUI_NORMAL));
+    //namedWindow("Background",(0 | CV_GUI_NORMAL));
+    //namedWindow("Mask",(0 | CV_GUI_NORMAL));
+    //namedWindow("Plano",(0 | CV_GUI_NORMAL));
+	
+    //cvResizeWindow("RGB",480,360);
+    cvResizeWindow("Tracker",980,360);
+    //cvResizeWindow("To Blobs",320,240);
+    //cvResizeWindow("To Blobs",640,240);
+    //cvResizeWindow("Background",320,240);
+    //cvResizeWindow("Mask",320,240);
+    //cvResizeWindow("Plano",320,240);
 
-    cvResizeWindow("RGB",480,360);
-    cvResizeWindow("To Blobs",320,240);
-    cvResizeWindow("Background",320,240);
-    cvResizeWindow("Mask",320,240);
-    cvResizeWindow("Plano",320,240);
-
-    cvMoveWindow("RGB",520,0);
-    cvMoveWindow("To Blobs",0,500);
-    cvMoveWindow("Background",320,500);
-    cvMoveWindow("Mask",640,500);
-    cvMoveWindow("Plano",960,500);
+    cvMoveWindow("Tracker",520,0);
+    //cvMoveWindow("To Blobs",0,500);
+    //cvMoveWindow("Background",320,500);
+    //cvMoveWindow("Mask",640,500);
+    //cvMoveWindow("Plano",960,500);
 
     cvCreateButton("Show Help",callBackSetValue,&g_showHelp,CV_CHECKBOX,1);
 
@@ -342,8 +346,8 @@ int main( int argc, char* argv[] )
     cvCreateTrackbar("Min Blob",NULL,&g_minBlob,10000);
     createButton("Module",callBackSetValue,&g_mod,CV_CHECKBOX,0);
     createButton("Mod-Zone",callBackSetValue,&g_neg,CV_CHECKBOX,0);
-    cvCreateTrackbar("Min Dist.","To Blobs",&g_min,10000);
-    cvCreateTrackbar("Max Dist.","To Blobs",&g_max,10000);
+    //cvCreateTrackbar("Min Dist.","Tracker",&g_min,10000);
+    //cvCreateTrackbar("Max Dist.","Tracker",&g_max,10000);
     cvCreateTrackbar("Deviation",NULL,&g_var,100000);
     createButton("Update Main",callBackSetValue,&g_showRGB,CV_CHECKBOX,1);
     createButton("Update To Blobs",callBackSetValue,&g_showPaBlobs,CV_CHECKBOX,1);
@@ -364,10 +368,12 @@ int main( int argc, char* argv[] )
 	//createButton("FishEye",callBackSetValue,&g_fisheye,CV_CHECKBOX,0);
 	//cvCreateTrackbar("K",NULL,&g_k,100000,callBackAgrandar);
 	createButton("OutTuioInfo",callBackSetValue,&g_outInfo,CV_CHECKBOX,1);
-    cvSetMouseCallback("RGB",MouseEvWrapper,(void*) CAL);
+    cvSetMouseCallback("Tracker",MouseEvWrapper,(void*) CAL);
 
 
     /*Several image definitions needed...*/
+
+
     Mat imgMap,maskMap,imgRGB,disp,imgMapRemaped,imgRGBRemaped;
     CvMat iMap;
     IplImage* nue=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
@@ -378,12 +384,21 @@ int main( int argc, char* argv[] )
     IplImage* mask=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,1);
     IplImage* maskBack=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,1);
     IplImage* maskZona=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,1);
+
     IplImage* iRGB=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,3);
     IplImage* iRGBaux=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,3);
     IplImage* iRGBaux2=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,3);
     IplImage* sal=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
     IplImage* sal0=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
-    /////////////////////////////////////////////////////////////////
+    	
+	// @Gawhary: Make large container image for iRGB, paBlobs and thin (20 pixel) margin
+	IplImage* iRGB_paBlobs=cvCreateImage(
+		cvSize(iRGB->width + paBlobs->width + g_imageDisplayMargin,max(iRGB->height, paBlobs->height)),
+		IPL_DEPTH_8U, 3);
+	cvSet(iRGB_paBlobs, cvScalar(200,200,2));
+
+	/////////////////////////////////////////////////////////////////
+
 
     g_showMask=0;
     g_showFondo=0;
@@ -433,7 +448,19 @@ int main( int argc, char* argv[] )
             if(g_showRGB==1)
             {
                 capture.retrieve(imgRGB,CV_CAP_OPENNI_BGR_IMAGE);
-                *iRGB=imgRGB;
+				//@ Gawhary: Check retrieved image size and recreate container if needed
+				IplImage temp = imgRGB;
+				if(imgRGB.cols > iRGB->width		||
+					imgRGB.rows > iRGB->height		||
+					temp.depth != iRGB->depth	||
+					temp.nChannels != iRGB->nChannels	){
+				// ToDo: check image depth and channels
+
+						// ToDo: delete and recreate iRGB_paBlobs
+						return -1;
+					
+				}
+				*iRGB=temp;
                 affineWarperAndMixer(warpAffin,iRGB,iRGBaux,iRGBaux2,(float)g_alpha/100,nue);
                 CAL->drawZone((g_showArea==1),iRGB);
             }
@@ -475,7 +502,7 @@ int main( int argc, char* argv[] )
             //////////////////////////////////////////////////////////
             /*Point calibration.*/
 
-            CAL->pointCal(iRGB,letra,"RGB");
+            CAL->pointCal(iRGB,letra,"Tracker");
             ///////////////////////////////////////////////////////////////////////
             /*This part calculates the difference between background (or the simulated plane) and new depth image
              *and normalizes the difference according to depth. Then a min and max threeshold
@@ -487,8 +514,8 @@ int main( int argc, char* argv[] )
                 //g_delta=50;
                 if(g_showPlano==1)
                 {
-                    cvShowImage("Plano",plano);
-                    cvShowImage("Mask",maskZona);
+                    //cvShowImage("Plano",plano);
+                    //cvShowImage("Mask",maskZona);
                     g_showPlano=0;
                 }
                 VP->distPlano(nue,sal,g_mod,g_neg);
@@ -517,7 +544,7 @@ int main( int argc, char* argv[] )
             {
                 if(g_showPlano==1)
                 {
-                    cvShowImage("Mask",maskZona);
+                    //cvShowImage("Mask",maskZona);
                     g_showPlano=0;
                 }
                 cvZero(sal);
@@ -549,7 +576,14 @@ int main( int argc, char* argv[] )
 
             if(g_showPaBlobs==1 && !CAL->occupied() && !BACK->contVal())
             {
-                cvShowImage("To Blobs", paBlobs);
+				// @Gawhary Copy To Blobs image to container
+				cvSetImageROI(iRGB_paBlobs, cvRect(iRGB->width + g_imageDisplayMargin,
+					0,paBlobs->width,paBlobs->height) );
+				// ToDo: convert image channels
+				//cvCopy(paBlobs,iRGB_paBlobs,NULL);
+				cvCvtColor(paBlobs, iRGB_paBlobs, CV_GRAY2RGB);
+				cvResetImageROI(iRGB_paBlobs);
+				cvShowImage("Tracker", iRGB_paBlobs);
             }
             blobs=0;
             cvClearMemStorage( g_storage );
@@ -576,8 +610,8 @@ int main( int argc, char* argv[] )
                 cout << "AUTO CALIBRATION STARTED" << endl;
                 g_autoReps++;
                 g_framesAuto=0;
-                setTrackbarPos("Min Dist.","To Blobs", 0);
-                setTrackbarPos("Max Dist.","To Blobs", g_delta);
+                setTrackbarPos("Min Dist.","Tracker", 0);
+                setTrackbarPos("Max Dist.","Tracker", g_delta);
             }
             else if(g_auto2==1 && nBlobsFound==2){
                 g_framesAuto++;
@@ -593,8 +627,8 @@ int main( int argc, char* argv[] )
                 g_framesAuto=0;
                 int minA=g_min;
                 if((minA+10+g_delta)<10000){
-                setTrackbarPos("Min Dist.", "To Blobs", (minA+20));
-                setTrackbarPos("Max Dist.", "To Blobs", (minA+20+g_delta));}
+                setTrackbarPos("Min Dist.", "Tracker", (minA+20));
+                setTrackbarPos("Max Dist.", "Tracker", (minA+20+g_delta));}
                 g_autoReps++;
             }
             if(g_autoReps>500){
@@ -609,18 +643,24 @@ int main( int argc, char* argv[] )
             {
 				if(g_showHelp==1 && !CAL->occupied() && !BACK->contVal())
                 {
-                 cvDisplayOverlay("RGB",help , 100);
+                 //cvDisplayOverlay("Tracker",help , 100);
                 }
-                cvShowImage("RGB", iRGB);
+				
+				// @Gawhary Copy iRGB image to container
+				cvSetImageROI(iRGB_paBlobs, cvRect(0, 0,iRGB->width,iRGB->height) );
+				cvCopy(iRGB,iRGB_paBlobs,NULL);
+				cvResetImageROI(iRGB_paBlobs);
+
+				cvShowImage("Tracker", iRGB_paBlobs);
             }
             if(g_showFondo==1)
             {
-                cvShowImage( "Background", Base);
+                //cvShowImage( "Background", Base);
                 g_showFondo=0;
             }
             if(g_showMask==1 && g_plano==0)
             {
-                cvShowImage("Mask", maskBack);
+                //cvShowImage("Mask", maskBack);
                 g_showMask=0;
             }
             if(timing==99)
@@ -647,7 +687,7 @@ int main( int argc, char* argv[] )
         }
         else if(keypressed == 102)
         {
-            setWindowProperty("RGB",CV_WND_PROP_FULLSCREEN, CV_WINDOW_NORMAL);
+            setWindowProperty("Tracker",CV_WND_PROP_FULLSCREEN, CV_WINDOW_NORMAL);
             CAL->abortCal();
         }
     }
@@ -658,10 +698,10 @@ int main( int argc, char* argv[] )
     delete VP;
     delete BM;
     delete BACK;
-    cvDestroyWindow("RGB");
-    cvDestroyWindow("To Blobs");
-    cvDestroyWindow("Background");
-    cvDestroyWindow("Mask");
-    cvDestroyWindow("Plano");
+    cvDestroyWindow("Tracker");
+    //cvDestroyWindow("To Blobs");
+    //cvDestroyWindow("Background");
+    //cvDestroyWindow("Mask");
+    //cvDestroyWindow("Plano");
     return 0;
 }
