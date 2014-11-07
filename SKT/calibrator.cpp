@@ -75,7 +75,11 @@ calibrator::calibrator(int i,int wi,int he,int le,int up)
     double a[4];
     double b[4];
     double di[4];
-    screenInfo(&width,&height);
+    // @Gawhary fixing screen resolution to 1024x768 as required
+	// screenInfo(&width,&height);
+	width = 1024;
+	height = 768;
+
 }
 
 calibrator::~calibrator()
