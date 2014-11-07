@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FB39AC42-6C17-40F6-B01D-224167CAA590}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SKT</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT;C:\Qt\4.7.3\include;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;C:\Qt\4.7.3\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;opencv_imgproc230.lib;opencv_core230.lib;opencv_video230.lib;opencv_highgui230.lib;atlsd.lib;ws2_32.lib;msvcrtd.lib;winmm.lib;libcpmtd.lib;netapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;C:\Qt\4.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>.\lib\openCV\x86\vc10\lib;.\lib\openCV\x86\vc10\bin;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;C:\Qt\4.8.6\bin;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;opencv_imgproc231.lib;opencv_core231.lib;opencv_video231.lib;opencv_highgui231.lib;atlsd.lib;ws2_32.lib;msvcrt.lib;winmm.lib;libcpmtd.lib;netapi32.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="backmethod.h" />
+    <ClInclude Include="blobmapper.h" />
+    <ClInclude Include="calibrator.h" />
+    <ClInclude Include="include\oscpack\ip\IpEndpointName.h" />
+    <ClInclude Include="include\oscpack\ip\NetworkingUtils.h" />
+    <ClInclude Include="include\oscpack\ip\PacketListener.h" />
+    <ClInclude Include="include\oscpack\ip\TimerListener.h" />
+    <ClInclude Include="include\oscpack\ip\UdpSocket.h" />
+    <ClInclude Include="include\oscpack\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="include\oscpack\osc\OscException.h" />
+    <ClInclude Include="include\oscpack\osc\OscHostEndianness.h" />
+    <ClInclude Include="include\oscpack\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="include\oscpack\osc\OscPacketListener.h" />
+    <ClInclude Include="include\oscpack\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="include\oscpack\osc\OscReceivedElements.h" />
+    <ClInclude Include="include\oscpack\osc\OscTypes.h" />
+    <ClInclude Include="include\tinyXML\tinystr.h" />
+    <ClInclude Include="include\tinyXML\tinyxml.h" />
+    <ClInclude Include="include\TUIO\TuioClient.h" />
+    <ClInclude Include="include\TUIO\TuioContainer.h" />
+    <ClInclude Include="include\TUIO\TuioCursor.h" />
+    <ClInclude Include="include\TUIO\TuioListener.h" />
+    <ClInclude Include="include\TUIO\TuioObject.h" />
+    <ClInclude Include="include\TUIO\TuioPoint.h" />
+    <ClInclude Include="include\TUIO\TuioServer.h" />
+    <ClInclude Include="include\TUIO\TuioTime.h" />
+    <ClInclude Include="mouseactions.h" />
+    <ClInclude Include="ransacfit.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="virtualplane.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="backmethod.cpp" />
+    <ClCompile Include="blobmapper.cpp" />
+    <ClCompile Include="calibrator.cpp" />
+    <ClCompile Include="include\oscpack\ip\IpEndpointName.cpp" />
+    <ClCompile Include="include\oscpack\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="include\oscpack\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="include\oscpack\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="include\oscpack\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="include\oscpack\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="include\oscpack\osc\OscTypes.cpp" />
+    <ClCompile Include="include\tinyXML\tinystr.cpp" />
+    <ClCompile Include="include\tinyXML\tinyxml.cpp" />
+    <ClCompile Include="include\tinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="include\tinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="include\TUIO\TuioClient.cpp" />
+    <ClCompile Include="include\TUIO\TuioServer.cpp" />
+    <ClCompile Include="include\TUIO\TuioTime.cpp" />
+    <ClCompile Include="mouseactions.cpp" />
+    <ClCompile Include="ransacfit.cpp" />
+    <ClCompile Include="SKT.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="virtualplane.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
