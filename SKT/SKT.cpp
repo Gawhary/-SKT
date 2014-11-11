@@ -57,8 +57,8 @@ int g_var=300;         //Minimum variance for pixels in the background allowed. 
 bool g_save=true;
 int g_calBack=0;        //Background calibration toggle.
 int g_calZona=0;        //Zone calibration toggle.
-int g_showRGB=0;
-int g_showPaBlobs=0;
+int g_showRGB=1;
+int g_showPaBlobs=1;
 int g_showFondo=0;
 int g_showMask=0;
 int g_showHelp=0;
@@ -86,7 +86,7 @@ int g_auto2=0;
 int g_framesAuto=0;
 int g_autoReps=0;
 int g_delta=50;
-int g_undist=0;
+int g_undist=1;
 int g_movPlano=2000;
 int g_escala=6000;
 int g_fisheye=0;
@@ -333,41 +333,41 @@ int main( int argc, char* argv[] )
     //cvMoveWindow("Mask",640,500);
     //cvMoveWindow("Plano",960,500);
 
-    cvCreateButton("Show Help",callBackSetValue,&g_showHelp,CV_CHECKBOX,1);
+    //cvCreateButton("Show Help",callBackSetValue,&g_showHelp,CV_CHECKBOX,1);
 
     /*Parameters for processing*/
-    cvCreateButton("Calibrate Background",callBackButton,&g_calBack,CV_PUSH_BUTTON);
-    cvCreateButton("Set Zone",callBackButton,&g_calZona,CV_PUSH_BUTTON);
-    cvCreateButton("Save Parameters",saveParameters,NULL,CV_PUSH_BUTTON);
-    cvCreateTrackbar("Alpha",NULL,&g_alpha,100);
-    cvCreateButton("Background Method",NULL,NULL,CV_RADIOBOX,1);
-    cvCreateButton("Plane Method",callBackSetValue,&g_plano,CV_RADIOBOX,0);
-    cvCreateButton("Threshold ",callBackSetValue,&g_threshold,CV_RADIOBOX,0);
-    cvCreateTrackbar("Min Blob",NULL,&g_minBlob,10000);
-    createButton("Module",callBackSetValue,&g_mod,CV_CHECKBOX,0);
-    createButton("Mod-Zone",callBackSetValue,&g_neg,CV_CHECKBOX,0);
-    //cvCreateTrackbar("Min Dist.","Tracker",&g_min,10000);
-    //cvCreateTrackbar("Max Dist.","Tracker",&g_max,10000);
-    cvCreateTrackbar("Deviation",NULL,&g_var,100000);
-    createButton("Update Main",callBackSetValue,&g_showRGB,CV_CHECKBOX,1);
-    createButton("Update To Blobs",callBackSetValue,&g_showPaBlobs,CV_CHECKBOX,1);
-    createButton("Show Blobs",callBackSetValue,&g_showBlobs,CV_CHECKBOX,1);
-    createButton("Show Valid Area",callBackSetValue,&g_showArea,CV_CHECKBOX,1);
-    cvCreateTrackbar("Valid Mask Scale",NULL,&g_espacio,1000,callBackAgrandar);
-    createButton("X <-> Y",callBackSetValue,&g_XY,CV_CHECKBOX,0);
-    createButton("X Flip",callBackSetValue,&g_XF,CV_CHECKBOX,0);
-    createButton("Y Flip",callBackSetValue,&g_YF,CV_CHECKBOX,0);
-    createButton("Mouse",callBackSetValue,&g_mouse,CV_CHECKBOX,0);
-    createButton("AsTouch",callBackSetValue,&g_asTouch,CV_CHECKBOX,0);
-    createButton("Cal-RGB-Depth",callBackSetValue,&g_undist,CV_CHECKBOX,1);
-    cvCreateButton("Start Point Calibration",callBackPoint,(void*) CAL,CV_PUSH_BUTTON);
-    cvCreateTrackbar("Move Plane",NULL,&g_movPlano,4000,callBackAgrandar);
-    cvCreateTrackbar("Delta-Auto",NULL,&g_delta,1000,NULL);
-    cvCreateButton("Auto Min-Max",callBackButton,&g_auto,CV_PUSH_BUTTON);
-	cvCreateButton("Stop Auto",callBackButton0,&g_auto2,CV_PUSH_BUTTON);
-	//createButton("FishEye",callBackSetValue,&g_fisheye,CV_CHECKBOX,0);
-	//cvCreateTrackbar("K",NULL,&g_k,100000,callBackAgrandar);
-	createButton("OutTuioInfo",callBackSetValue,&g_outInfo,CV_CHECKBOX,1);
+    //cvCreateButton("Calibrate Background",callBackButton,&g_calBack,CV_PUSH_BUTTON);
+    //cvCreateButton("Set Zone",callBackButton,&g_calZona,CV_PUSH_BUTTON);
+    //cvCreateButton("Save Parameters",saveParameters,NULL,CV_PUSH_BUTTON);
+    //cvCreateTrackbar("Alpha",NULL,&g_alpha,100);
+    //cvCreateButton("Background Method",NULL,NULL,CV_RADIOBOX,1);
+    //cvCreateButton("Plane Method",callBackSetValue,&g_plano,CV_RADIOBOX,0);
+    //cvCreateButton("Threshold ",callBackSetValue,&g_threshold,CV_RADIOBOX,0);
+    //cvCreateTrackbar("Min Blob",NULL,&g_minBlob,10000);
+    //createButton("Module",callBackSetValue,&g_mod,CV_CHECKBOX,0);
+    //createButton("Mod-Zone",callBackSetValue,&g_neg,CV_CHECKBOX,0);
+    cvCreateTrackbar("Min Dist.","Tracker",&g_min,10000);
+    cvCreateTrackbar("Max Dist.","Tracker",&g_max,10000);
+//    //cvCreateTrackbar("Deviation",NULL,&g_var,100000);
+//    createButton("Update Main",callBackSetValue,&g_showRGB,CV_CHECKBOX,1);
+//    createButton("Update To Blobs",callBackSetValue,&g_showPaBlobs,CV_CHECKBOX,1);
+//    createButton("Show Blobs",callBackSetValue,&g_showBlobs,CV_CHECKBOX,1);
+//    createButton("Show Valid Area",callBackSetValue,&g_showArea,CV_CHECKBOX,1);
+//    cvCreateTrackbar("Valid Mask Scale",NULL,&g_espacio,1000,callBackAgrandar);
+//    createButton("X <-> Y",callBackSetValue,&g_XY,CV_CHECKBOX,0);
+//    createButton("X Flip",callBackSetValue,&g_XF,CV_CHECKBOX,0);
+//    createButton("Y Flip",callBackSetValue,&g_YF,CV_CHECKBOX,0);
+//    createButton("Mouse",callBackSetValue,&g_mouse,CV_CHECKBOX,0);
+//    createButton("AsTouch",callBackSetValue,&g_asTouch,CV_CHECKBOX,0);
+//    createButton("Cal-RGB-Depth",callBackSetValue,&g_undist,CV_CHECKBOX,1);
+//    cvCreateButton("Start Point Calibration",callBackPoint,(void*) CAL,CV_PUSH_BUTTON);
+//    cvCreateTrackbar("Move Plane",NULL,&g_movPlano,4000,callBackAgrandar);
+//    cvCreateTrackbar("Delta-Auto",NULL,&g_delta,1000,NULL);
+//    cvCreateButton("Auto Min-Max",callBackButton,&g_auto,CV_PUSH_BUTTON);
+//	cvCreateButton("Stop Auto",callBackButton0,&g_auto2,CV_PUSH_BUTTON);
+//	//createButton("FishEye",callBackSetValue,&g_fisheye,CV_CHECKBOX,0);
+//	//cvCreateTrackbar("K",NULL,&g_k,100000,callBackAgrandar);
+//	createButton("OutTuioInfo",callBackSetValue,&g_outInfo,CV_CHECKBOX,1);
     cvSetMouseCallback("Tracker",MouseEvWrapper,(void*) CAL);
 
 
@@ -395,7 +395,7 @@ int main( int argc, char* argv[] )
 	IplImage* iRGB_paBlobs=cvCreateImage(
 		cvSize(iRGB->width + paBlobs->width + g_imageDisplayMargin,max(iRGB->height, paBlobs->height)),
 		IPL_DEPTH_8U, 3);
-	cvSet(iRGB_paBlobs, cvScalar(200,200,2));
+	cvSet(iRGB_paBlobs, cvScalar(200,200,200));
 
 	/////////////////////////////////////////////////////////////////
 
@@ -404,7 +404,8 @@ int main( int argc, char* argv[] )
     g_showFondo=0;
     inicio=clock();
     int matchRGB=1;
-    for(;;)
+	HWND  h;
+	do
     {
         //RGB-DEPTH MATCH BY OPENCV
         if(matchRGB!=g_undist){
@@ -681,16 +682,22 @@ int main( int argc, char* argv[] )
             //////////////////////////////////////////////////////////////////////////////////////////////
         }
         int keypressed=cvWaitKey( 1 );
-        if( keypressed == 27 )
-        {
-            break;
-        }
-        else if(keypressed == 102)
+        //if( keypressed == 27 )
+        //{
+        //    break;
+        //}
+        //else
+		if(keypressed == 102)
         {
             setWindowProperty("Tracker",CV_WND_PROP_FULLSCREEN, CV_WINDOW_NORMAL);
             CAL->abortCal();
         }
-    }
+		//HWND hwnd = (HWND)cvGetWindowHandle("Tracker");
+		//if(!IsWindowVisible(hwnd))
+		//	return 0;
+		h = (HWND)cvGetWindowHandle("Tracker"); 
+    }	
+    while( h!=NULL /*&& IsWindowVisible(h)*/);
 
     delete letra;
     delete server;

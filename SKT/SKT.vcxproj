@@ -70,7 +70,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;C:\Qt\4.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
