@@ -31,6 +31,7 @@ and to alter it and redistribute it freely, subject to the following restriction
 #include <tinyxml.h>
 #include <tinystr.h>
 #include <string.h>
+#include "cvimagewidgetgl.h"
 
 #ifndef WIN32
 #include <X11/Xlib.h>

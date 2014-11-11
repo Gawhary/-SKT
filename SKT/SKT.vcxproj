@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB39AC42-6C17-40F6-B01D-224167CAA590}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
+    <Keyword>Qt4VSv1.0</Keyword>
     <RootNamespace>SKT</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -49,14 +49,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT;C:\Qt\4.7.3\include;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT;$(QTDIR)\include;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;C:\Qt\4.7.3\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;opencv_imgproc230.lib;opencv_core230.lib;opencv_video230.lib;opencv_highgui230.lib;atlsd.lib;ws2_32.lib;msvcrtd.lib;winmm.lib;libcpmtd.lib;netapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;$(QTDIR)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;opencv_imgproc230.lib;opencv_core230.lib;opencv_video230.lib;opencv_highgui230.lib;atlsd.lib;ws2_32.lib;msvcrtd.lib;winmm.lib;libcpmtd.lib;netapi32.lib;QtCored4.lib;QtGuid4.lib;QtOpenGLd4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,16 +68,18 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;C:\Qt\4.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;WIN32;NDEBUG;_CONSOLE;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>.\lib\openCV\x86\vc10\lib;.\lib\openCV\x86\vc10\bin;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;C:\Qt\4.8.6\bin;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;opencv_imgproc231.lib;opencv_core231.lib;opencv_video231.lib;opencv_highgui231.lib;atlsd.lib;ws2_32.lib;msvcrt.lib;winmm.lib;libcpmtd.lib;netapi32.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\lib\openCV\x86\vc10\lib;.\lib\openCV\x86\vc10\bin;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;$(QTDIR)\bin;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;opencv_imgproc231.lib;opencv_core231.lib;opencv_video231.lib;opencv_highgui231.lib;atlsd.lib;ws2_32.lib;msvcrt.lib;winmm.lib;libcpmtd.lib;netapi32.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;QtCored4.lib;QtGuid4.lib;QtOpenGLd4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -85,6 +89,27 @@
     <ClInclude Include="backmethod.h" />
     <ClInclude Include="blobmapper.h" />
     <ClInclude Include="calibrator.h" />
+    <CustomBuild Include="cvimagewidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing cvimagewidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing cvimagewidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+    </CustomBuild>
+    <CustomBuild Include="cvimagewidgetgl.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing cvimagewidgetgl.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing cvimagewidgetgl.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+    </CustomBuild>
+    <ClInclude Include="HiResTimer.h" />
     <ClInclude Include="include\oscpack\ip\IpEndpointName.h" />
     <ClInclude Include="include\oscpack\ip\NetworkingUtils.h" />
     <ClInclude Include="include\oscpack\ip\PacketListener.h" />
@@ -118,6 +143,20 @@
     <ClCompile Include="backmethod.cpp" />
     <ClCompile Include="blobmapper.cpp" />
     <ClCompile Include="calibrator.cpp" />
+    <ClCompile Include="cvimagewidget.cpp" />
+    <ClCompile Include="cvimagewidgetgl.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_cvimagewidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cvimagewidgetgl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cvimagewidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cvimagewidgetgl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="include\oscpack\ip\IpEndpointName.cpp" />
     <ClCompile Include="include\oscpack\ip\win32\NetworkingUtils.cpp" />
     <ClCompile Include="include\oscpack\ip\win32\UdpSocket.cpp" />
@@ -144,4 +183,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="4.8.6" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
