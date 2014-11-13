@@ -449,7 +449,6 @@ void TuioClient::ProcessPacket( const char *data, int size, const IpEndpointName
 }
 
 void TuioClient::connect(bool lk) {
-
 #ifndef WIN32	
 	/*pthread_mutexattr_settype(&attr_p, PTHREAD_MUTEX_RECURSIVE);
 	pthread_mutex_init(&cursorMutex,&attr_p);
@@ -457,8 +456,8 @@ void TuioClient::connect(bool lk) {
 	pthread_mutex_init(&cursorMutex,NULL);
 	pthread_mutex_init(&objectMutex,NULL);	
 #else
-	cursorMutex = CreateMutex(NULL,FALSE,"cursorMutex");
-	objectMutex = CreateMutex(NULL,FALSE,"objectMutex");
+    cursorMutex = CreateMutex(NULL,FALSE,"cursorMutex");
+    objectMutex = CreateMutex(NULL,FALSE,"objectMutex");
 #endif		
 		
 	if (socket==NULL) return;

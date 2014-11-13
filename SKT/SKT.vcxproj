@@ -51,7 +51,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT;$(QTDIR)\include;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT;$(QTDIR)\include;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack;C:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include;.\GeneratedFiles;.\;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -70,7 +70,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0501;WIN32;NDEBUG;_CONSOLE;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SKT;$(SolutionDir)\SKT\include\TUIO;$(SolutionDir)\SKT\include\tinyXML;$(SolutionDir)\SKT\include\oscpack;$(SolutionDir)\SKT\include;$(QTDIR)\include;.\GeneratedFiles;.\;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -83,6 +83,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CustomBuild Include="mainwindow.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+    </CustomBuild>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -93,22 +104,23 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing cvimagewidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE  "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing cvimagewidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL  "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
     </CustomBuild>
     <CustomBuild Include="cvimagewidgetgl.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing cvimagewidgetgl.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE  "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing cvimagewidgetgl.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL  "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
     </CustomBuild>
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <ClInclude Include="HiResTimer.h" />
     <ClInclude Include="include\oscpack\ip\IpEndpointName.h" />
     <ClInclude Include="include\oscpack\ip\NetworkingUtils.h" />
@@ -133,6 +145,16 @@
     <ClInclude Include="include\TUIO\TuioPoint.h" />
     <ClInclude Include="include\TUIO\TuioServer.h" />
     <ClInclude Include="include\TUIO\TuioTime.h" />
+    <CustomBuild Include="mainwindow.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_DEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_UNICODE -DUNICODE  "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT" "-I$(QTDIR)\include" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\TUIO" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\tinyXML" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include\oscpack" "-IC:\Users\lojkoro\Documents\Visual Studio 2010\Projects\SKT\SKT\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WIN32_WINNT=0x0501 -DWIN32 -DNDEBUG -D_CONSOLE -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -D_MBCS -D_AFXDLL  "-I$(SolutionDir)\SKT" "-I$(SolutionDir)\SKT\include\TUIO" "-I$(SolutionDir)\SKT\include\tinyXML" "-I$(SolutionDir)\SKT\include\oscpack" "-I$(SolutionDir)\SKT\include" "-I$(QTDIR)\include" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL"</Command>
+    </CustomBuild>
     <ClInclude Include="mouseactions.h" />
     <ClInclude Include="ransacfit.h" />
     <ClInclude Include="stdafx.h" />
@@ -151,10 +173,16 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_cvimagewidgetgl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_cvimagewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_cvimagewidgetgl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="include\oscpack\ip\IpEndpointName.cpp" />
@@ -171,6 +199,7 @@
     <ClCompile Include="include\TUIO\TuioClient.cpp" />
     <ClCompile Include="include\TUIO\TuioServer.cpp" />
     <ClCompile Include="include\TUIO\TuioTime.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="mouseactions.cpp" />
     <ClCompile Include="ransacfit.cpp" />
     <ClCompile Include="SKT.cpp" />

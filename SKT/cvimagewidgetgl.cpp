@@ -31,15 +31,15 @@ void CvImageWidgetGL::initializeGL()
     glEnable(GL_TEXTURE_2D);
 }
 
-void CvImageWidgetGL::putFrame(IplImage *pImg, bool col){
+void CvImageWidgetGL::showImage(IplImage *pImg, bool col){
 
 
     cv::Mat img(pImg,false);
-    putFrame(img, col);
+    showImage(img, col);
 
 }
 
-void CvImageWidgetGL::putFrame(Mat img, bool col)
+void CvImageWidgetGL::showImage(Mat img, bool col)
 {
     timer.GetElapsedMilliSeconds();
     //cout << "up 0" << endl;

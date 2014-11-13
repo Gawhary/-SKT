@@ -18,8 +18,8 @@ public:
     explicit CvImageWidgetGL (QWidget *parent = 0);
 	~CvImageWidgetGL();
     QPixmap toPixmap(IplImage *img);
-    void putFrame(IplImage *img, bool color = true);
-    void putFrame(cv::Mat img, bool col = true);
+    void showImage(IplImage *img, bool color = true);
+    void showImage(cv::Mat img, bool col = true);
 protected:
     virtual void paintGL();
     virtual void initializeGL();
