@@ -36,11 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_exit(false)
 {
+    m_method=METHOD_BACKGROUND;
+    m_CAL=NULL;
     ui.setupUi(this);
     ui.distSlider->setMaximum(1000);
     ui.distSlider->setMinimum(0);
     ui.distSlider->setLowerValue(55);
     ui.distSlider->setUpperValue(230);
+    ui.MinSlider->setValue(80);
+    ui.image_depthSlider->setValue(100);
     QTimer::singleShot(0,this, SLOT(run()));
 
 }
@@ -61,48 +65,26 @@ int g_imageDisplayMargin=10; // @Gawhary: Margins between multi-images in one wi
 //int g_min=55;         //Min threeshold for selection of pixels near interaction zone. Divided by 10000.
 //int g_max=230;         //Max threeshold for selection of pixels near interaction zone. Divided by 10000.
 int g_maxBlob=50;       //Max blob area for filter. NOT IMPLEMENTED
-int g_minBlob=80;      //Min blob area for blob filter.
 int g_thre=0;           //Threeshold for last image. Almost not used...
 int g_mult=1;           //Multiplier for scale adjust of images. Not used...
 int g_var=300;         //Minimum variance for pixels in the background allowed. Divided by 100000 after.
 bool g_save=true;
-int g_calBack=0;        //Background calibration toggle.
 int g_calZona=0;        //Zone calibration toggle.
-int g_showRGB=1;
-int g_showPaBlobs=1;
 int g_showFondo=0;
 int g_showMask=0;
-int g_showHelp=0;
-int g_showBlobs=1;
-int g_showArea=1;
-int g_outInfo=1;
-int g_XY=0;
-int g_XF=0;
-int g_YF=0;
-int g_alpha=100;
-int g_plano=0;
 int g_showPlano=0;
 int g_espacio=100;
-int g_mod=0;
-int g_neg=0;
-int g_mouse=0;
-int g_threshold=0;
 bool g_agrandar=false;
 const char* g_host;
 int g_port=3333;
 int g_maxNumBlobs=100;
 int g_numPoints=5;
-int g_auto=0;
 int g_auto2=0;
 int g_framesAuto=0;
-int g_autoReps=0;
-int g_delta=50;
-int g_undist=1;
 int g_movPlano=2000;
 int g_escala=6000;
 int g_fisheye=0;
 int g_k=0;
-int g_asTouch=0;
 clock_t inicio,fin;
 char* help="Press Ctrl+p for settings.\n"
            "To change TUIO info edit settings.xml file\n"
@@ -169,29 +151,24 @@ std::string MainWindow::loadParameters(bool all)
         TiXmlElement * tuioInfo=valores->FirstChildElement("Tuio-Info");
         TiXmlElement * pointCal=valores->FirstChildElement("Point-Calibration");
         if(all){
-            int min = ui.distSlider->lowerValue();
-            int max = ui.distSlider->upperValue();
-            read=blobDet->QueryIntAttribute("Min-Distance",&min);
-            read=blobDet->QueryIntAttribute("Max-Distance",&max);
-            read=blobDet->QueryIntAttribute("Min-Blob-Area",&g_minBlob);
+            int _min = ui.distSlider->lowerValue();
+            int _max = ui.distSlider->upperValue();
+            read=blobDet->QueryIntAttribute("Min-Distance",&_min);
+            read=blobDet->QueryIntAttribute("Max-Distance",&_max);
+            int _minBlob = ui.MinSlider->value();
+            read=blobDet->QueryIntAttribute("Min-Blob-Area",&_minBlob);
+            ui.MinSlider->setValue(_minBlob);
             read=blobDet->QueryIntAttribute("Background-Accepted-Variance",&g_var);
             read=blobDet->QueryIntAttribute("Maximum-Number-Of-Blobs",&g_maxNumBlobs);
-            ///////////////////////////////////////////////////////////////////////////////
-            /*DEPRECATED
-        read=affineVal->QueryIntAttribute("X-X",&g_xx);
-        read=affineVal->QueryIntAttribute("Y-Y",&g_yy);
-        read=affineVal->QueryIntAttribute("X-X-X",&g_xxx);
-        read=affineVal->QueryIntAttribute("Y-Y-Y",&g_yyy);
-        read=affineVal->QueryIntAttribute("X-Y",&g_xy);
-        read=affineVal->QueryIntAttribute("Y-X",&g_yx);*/
-            ///////////////////////////////////////////////////////////////////////////////
-            read=affineVal->QueryIntAttribute("Alpha",&g_alpha);
+            int _alpha = ui.image_depthSlider->value();
+            read=affineVal->QueryIntAttribute("Alpha",&_alpha);
+            ui.image_depthSlider->setValue(_alpha);
             read=tuioInfo->QueryIntAttribute("Port",&g_port);
             read=pointCal->QueryIntAttribute("Number-Of-Calibration-Points",&g_numPoints);
             cout << "Parameter file: settings.xml - Loaded!" << endl;
 
-            ui.distSlider->setLowerValue(min);
-            ui.distSlider->setUpperValue(max);
+            ui.distSlider->setLowerValue(_min);
+            ui.distSlider->setUpperValue(_max);
         }
         return tuioInfo->Attribute("Host");
     }
@@ -221,10 +198,10 @@ void MainWindow::saveParameters(int a,void* param)
     valores->LinkEndChild( pointCal );
     blobDet->SetAttribute("Min-Distance", ui.distSlider->lowerValue());
     blobDet->SetAttribute("Max-Distance", ui.distSlider->upperValue());
-    blobDet->SetAttribute("Min-Blob-Area", g_minBlob);
+    blobDet->SetAttribute("Min-Blob-Area", ui.MinSlider->value());
     blobDet->SetAttribute("Background-Accepted-Variance", g_var);
     blobDet->SetAttribute("Maximum-Number-Of-Blobs",g_maxNumBlobs);
-    affineVal->SetAttribute("Alpha", g_alpha);
+    affineVal->SetAttribute("Alpha", ui.image_depthSlider->value());
     tuioInfo->SetAttribute("Host",loadParameters(false).c_str());
     tuioInfo->SetAttribute("Port",g_port);
     pointCal->SetAttribute("Number-Of-Calibration-Points",g_numPoints);
@@ -281,11 +258,11 @@ int MainWindow::run(){
 
     TuioServer *server=new TuioServer(g_host,g_port);
     virtualplane *VP=new virtualplane();
-    calibrator* CAL=new calibrator(g_numPoints,640,480,5,5);
+    m_CAL=new calibrator(g_numPoints,640,480,5,5);
     blobmapper* BM=new blobmapper(g_maxNumBlobs);
     backmethod* BACK=new backmethod();
 
-    cout << "Screen : " << CAL->GetWidth() << ","<<  CAL->GetHeight() << endl;
+    cout << "Screen : " << m_CAL->GetWidth() << ","<<  m_CAL->GetHeight() << endl;
     TuioTime time;
     CvMemStorage* g_storage = NULL;
     g_storage=cvCreateMemStorage(0);
@@ -307,7 +284,7 @@ int MainWindow::run(){
         cout << endl << "Could not find any device." << endl;
         delete letra;
         delete server;
-        delete CAL;
+        delete m_CAL;
         delete VP;
         delete BM;
         delete BACK;
@@ -322,68 +299,24 @@ int MainWindow::run(){
         cout << "Could not open the device." << endl;
         delete letra;
         delete server;
-        delete CAL;
+        delete m_CAL;
         delete VP;
         delete BM;
         delete BACK;
         return -1;
     }
 
-//    namedWindow("Tracker",(0 | CV_GUI_NORMAL));
-    //namedWindow("To Blobs",(0 | CV_GUI_NORMAL));
-    //namedWindow("Background",(0 | CV_GUI_NORMAL));
-    //namedWindow("Mask",(0 | CV_GUI_NORMAL));
-    //namedWindow("Plano",(0 | CV_GUI_NORMAL));
-
-    //cvResizeWindow("RGB",480,360);
-//    cvResizeWindow("Tracker",980,360);
-    //cvResizeWindow("To Blobs",320,240);
-    //cvResizeWindow("To Blobs",640,240);
-    //cvResizeWindow("Background",320,240);
-    //cvResizeWindow("Mask",320,240);
-    //cvResizeWindow("Plano",320,240);
-
-//    cvMoveWindow("Tracker",520,0);
-    //cvMoveWindow("To Blobs",0,500);
-    //cvMoveWindow("Background",320,500);
-    //cvMoveWindow("Mask",640,500);
-    //cvMoveWindow("Plano",960,500);
-
-    //cvCreateButton("Show Help",callBackSetValue,&g_showHelp,CV_CHECKBOX,1);
-
     /*Parameters for processing*/
-    //cvCreateButton("Calibrate Background",callBackButton,&g_calBack,CV_PUSH_BUTTON);
     //cvCreateButton("Set Zone",callBackButton,&g_calZona,CV_PUSH_BUTTON);
     //cvCreateButton("Save Parameters",saveParameters,NULL,CV_PUSH_BUTTON);
-    //cvCreateTrackbar("Alpha",NULL,&g_alpha,100);
     //cvCreateButton("Background Method",NULL,NULL,CV_RADIOBOX,1);
     //cvCreateButton("Plane Method",callBackSetValue,&g_plano,CV_RADIOBOX,0);
     //cvCreateButton("Threshold ",callBackSetValue,&g_threshold,CV_RADIOBOX,0);
-    //cvCreateTrackbar("Min Blob",NULL,&g_minBlob,10000);
-    //createButton("Module",callBackSetValue,&g_mod,CV_CHECKBOX,0);
-    //createButton("Mod-Zone",callBackSetValue,&g_neg,CV_CHECKBOX,0);
 //    cvCreateTrackbar("Min Dist.","Tracker",&g_min,10000);
 //    cvCreateTrackbar("Max Dist.","Tracker",&g_max,10000);
-    //    //cvCreateTrackbar("Deviation",NULL,&g_var,100000);
-    //    createButton("Update Main",callBackSetValue,&g_showRGB,CV_CHECKBOX,1);
-    //    createButton("Update To Blobs",callBackSetValue,&g_showPaBlobs,CV_CHECKBOX,1);
-    //    createButton("Show Blobs",callBackSetValue,&g_showBlobs,CV_CHECKBOX,1);
-    //    createButton("Show Valid Area",callBackSetValue,&g_showArea,CV_CHECKBOX,1);
-    //    cvCreateTrackbar("Valid Mask Scale",NULL,&g_espacio,1000,callBackAgrandar);
-    //    createButton("X <-> Y",callBackSetValue,&g_XY,CV_CHECKBOX,0);
-    //    createButton("X Flip",callBackSetValue,&g_XF,CV_CHECKBOX,0);
-    //    createButton("Y Flip",callBackSetValue,&g_YF,CV_CHECKBOX,0);
-    //    createButton("Mouse",callBackSetValue,&g_mouse,CV_CHECKBOX,0);
-    //    createButton("AsTouch",callBackSetValue,&g_asTouch,CV_CHECKBOX,0);
-    //    createButton("Cal-RGB-Depth",callBackSetValue,&g_undist,CV_CHECKBOX,1);
     //    cvCreateButton("Start Point Calibration",callBackPoint,(void*) CAL,CV_PUSH_BUTTON);
-    //    cvCreateTrackbar("Move Plane",NULL,&g_movPlano,4000,callBackAgrandar);
-    //    cvCreateTrackbar("Delta-Auto",NULL,&g_delta,1000,NULL);
-    //    cvCreateButton("Auto Min-Max",callBackButton,&g_auto,CV_PUSH_BUTTON);
-    //	cvCreateButton("Stop Auto",callBackButton0,&g_auto2,CV_PUSH_BUTTON);
     //	//createButton("FishEye",callBackSetValue,&g_fisheye,CV_CHECKBOX,0);
     //	//cvCreateTrackbar("K",NULL,&g_k,100000,callBackAgrandar);
-    //	createButton("OutTuioInfo",callBackSetValue,&g_outInfo,CV_CHECKBOX,1);
 //    cvSetMouseCallback("Tracker",MouseEvWrapper,(void*) CAL);
 
 
@@ -413,28 +346,15 @@ int MainWindow::run(){
     g_showMask=0;
     g_showFondo=0;
     inicio=clock();
-    int matchRGB=1;
-    HWND  h;
     while(!m_exit)
     {
-        //RGB-DEPTH MATCH BY OPENCV
-        if(matchRGB!=g_undist){
-            capture.set( CV_CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION_ON,g_undist);
-            matchRGB=g_undist;
-        }
-        //Background calibration starting point.
-        if(g_calBack==1)
-        {
-            g_calBack=0;
-            BACK->start();
-        }
         ////////////////////////////////////////
 
         //Zone calibration starting point.
         if(g_calZona==1)
         {
             g_calZona=0;
-            CAL->zoneCalBegin();
+            m_CAL->zoneCalBegin();
             for(int r=0; r<4; r++)
             {
                 VP->SetPl(r,0.0);
@@ -456,13 +376,12 @@ int MainWindow::run(){
             *mask=maskMap;
             cvConvertScale(&iMap,nue,(double)1/6000);
 
-            if(g_showRGB==1)
-            {
-                capture.retrieve(imgRGB,CV_CAP_OPENNI_BGR_IMAGE);
-                *iRGB=imgRGB;
-                affineWarperAndMixer(warpAffin,iRGB,iRGBaux,iRGBaux2,(float)g_alpha/100,nue);
-                CAL->drawZone((g_showArea==1),iRGB);
-            }
+
+            capture.retrieve(imgRGB,CV_CAP_OPENNI_BGR_IMAGE);
+            *iRGB=imgRGB;
+            affineWarperAndMixer(warpAffin,iRGB,iRGBaux,iRGBaux2,(float)ui.image_depthSlider->value()/100.0,nue);
+            m_CAL->drawZone((ui.showPlaneCheckBox->isChecked()),iRGB);
+
             /////////////////////////////////////////////
 
             /*Background setting with sampling over 100 frames. Background mask
@@ -478,10 +397,10 @@ int MainWindow::run(){
 
             /*Calibration for valid zone. This reduces noise by selecting the interaction zone.
              *It also calibrates valid range for the output coordinates of the blobs.*/
-            if(CAL->zoneCal(iRGB,maskZona,maskBack,letra,g_espacio))
+            if(m_CAL->zoneCal(iRGB,maskZona,maskBack,letra,g_espacio))
             {
                 g_showMask=1;
-                if(g_plano==1){
+                if(m_method == METHOD_PLANE){
                     VP->calcPlano(nue,maskZona,mask);
                     ////VP->calcPlano(Base,maskZona,maskBack);
                     VP->hacerPlano(plano,maskZona);
@@ -492,7 +411,7 @@ int MainWindow::run(){
             if(g_agrandar)
             {
                 VP->SetPl(2,(double)(VP->GetPl(3)*((double)g_movPlano/1000-1.0)));
-                CAL->enlargeMask(maskZona,g_espacio);
+                m_CAL->enlargeMask(maskZona,g_espacio);
                 g_agrandar=false;
                 g_showPlano=1;
                 cvSetZero(plano);
@@ -508,35 +427,22 @@ int MainWindow::run(){
              *is used to select pixels near the interaction zone. */
 
             cvSetZero(sal0);
-            if(g_plano==1)
+            if(m_method == METHOD_PLANE)
             {
-                //g_delta=50;
-                if(g_showPlano==1)
+                if(m_method = METHOD_PLANE)
                 {
                     //cvShowImage("Plano",plano);
                     //cvShowImage("Mask",maskZona);
                     g_showPlano=0;
                 }
-                VP->distPlano(nue,sal,g_mod,g_neg);
+                VP->distPlano(nue,sal,0,0);
                 //cvSub(plano,nue,sal);
             }
             ///////////////////////
-            else if(g_threshold==0)
+            else if(m_method == METHOD_BACKGROUND )
             {
-                //g_delta=50;
                 cvAnd(mask,maskBack,mask);
-                if(g_mod==1)
-                {
-                    if(g_neg==0){
-                        cvAbsDiff(Base,nue,sal0);}
-                    else{
-                        cvSub(nue,Base,sal0);
-                    }
-                }
-                else
-                {
-                    cvSub(Base,nue,sal0);
-                }
+                cvSub(Base,nue,sal0);
                 cvDiv(sal0,Base,sal);
             }
             else
@@ -549,11 +455,10 @@ int MainWindow::run(){
                 cvZero(sal);
                 cvAnd(maskZona,mask,mask);
                 cvCopy(nue,sal,mask);
-                //g_delta=100;
             }
             /////////////////////
-            cvThreshold(sal,sal,(double)ui.distSlider->lowerValue()/10000,1.0,CV_THRESH_TOZERO);
-            cvThreshold(sal,sal,(double)ui.distSlider->upperValue()/10000,1.0,CV_THRESH_TOZERO_INV);
+            cvThreshold(sal,sal,(double)ui.distSlider->lowerValue()/10000.0,1.0,CV_THRESH_TOZERO);
+            cvThreshold(sal,sal,(double)ui.distSlider->upperValue()/10000.0,1.0,CV_THRESH_TOZERO_INV);
             cvConvertScale(sal,paBlobs,255*g_mult);
             ///////////////////////////////////////////////////////////////////////
 
@@ -562,7 +467,7 @@ int MainWindow::run(){
             hacer0bordes(paBlobs);
             cvThreshold(paBlobs,paBlobs,g_thre,255,CV_THRESH_BINARY);
 
-            if(g_plano==1)
+            if(m_method == METHOD_PLANE)
             {
                 cvAnd(maskZona,paBlobs,paBlobs);
             }
@@ -573,7 +478,7 @@ int MainWindow::run(){
 
 
 
-            if(g_showPaBlobs==1 && !CAL->occupied() && !BACK->contVal())
+            if( !m_CAL->occupied() && !BACK->contVal())
             {
                 ui.toBlobsImage->showImage(paBlobs, false);
             }
@@ -586,72 +491,24 @@ int MainWindow::run(){
              *adds new ones, removes old ones not related to new ones and updates new blobs related
              *to old ones. Each part adds to the final TUIO message.*/
             int nBlobsFound=0;
-            if(!BM->noBlobs(blobs,server,&time,(g_outInfo==1),g_asTouch==1,g_mouse==1))
+            if(!BM->noBlobs(blobs,server,&time,false,false,false))
             {
-                nBlobsFound=BM->blobRemap(blobs,server,&time,g_minBlob,iRGB,CAL,letra,(g_XY!=0),(g_XF!=0),(g_YF!=0),(g_showRGB==1 && g_showBlobs==1),g_mouse==1,nue,(g_outInfo==1),g_asTouch==1);
+                nBlobsFound=BM->blobRemap(blobs,server,&time,ui.MinSlider->value(),iRGB,
+                                          m_CAL,letra,false,
+                                          ui.flipCheckBox->isChecked(),
+                                          ui.flipCheckBox->isChecked(),
+                                          ui.showPlaneCheckBox->isChecked(),
+                                          false,nue,false,false);
             }
-            ////////////////////////////////////////////////////////////////////////////////
-            /*This part is for auto calibration of min and max distance*/
-            if(g_auto==1){
-                g_auto2=1;
-                g_auto=0;
-                g_autoReps=0;
-                g_framesAuto=0;
-            }
-            if(g_auto2==1 && g_autoReps==0){
-                cout << "AUTO CALIBRATION STARTED" << endl;
-                g_autoReps++;
-                g_framesAuto=0;
 
-//                setTrackbarPos("Min Dist.","Tracker", 0);
-//                setTrackbarPos("Max Dist.","Tracker", g_delta);
-                ui.distSlider->setLowerPosition(0);
-                ui.distSlider->setUpperPosition(g_delta);
-            }
-            else if(g_auto2==1 && nBlobsFound==2){
-                g_framesAuto++;
-                if(g_framesAuto>10){
-                    g_auto2=0;
-                    g_framesAuto=0;
-                    g_autoReps=0;
-                    cout << "Auto calibration done." << endl;
-                }
-                g_autoReps++;
-            }
-            else if(g_auto2==1){
-                g_framesAuto=0;
-                int minA=ui.distSlider->lowerValue();
-                if((minA+10+g_delta)<10000){
-//                    setTrackbarPos("Min Dist.", "Tracker", (minA+20));
-//                    setTrackbarPos("Max Dist.", "Tracker", (minA+20+g_delta));
-                    ui.distSlider->setLowerValue((minA+20));
-                    ui.distSlider->setUpperValue((minA+20+g_delta));
-                }
-                g_autoReps++;
-            }
-            if(g_autoReps>500){
-                g_auto2=0;
-                g_framesAuto=0;
-                g_autoReps=0;
-                cout << "Auto calibration could not be performed... \n Try adjusting other parameters first." << endl;
-            }
-            ///////////////////////////////////////////////////////////////////////////////////////////////
+            ui.rgbImage->showImage(iRGB);
 
-            if(g_showRGB==1)
-            {
-                if(g_showHelp==1 && !CAL->occupied() && !BACK->contVal())
-                {
-//                    cvDisplayOverlay("Tracker",help , 100);
-                }
-
-                ui.rgbImage->showImage(iRGB);
-            }
             if(g_showFondo==1)
             {
                 //cvShowImage( "Background", Base);
                 g_showFondo=0;
             }
-            if(g_showMask==1 && g_plano==0)
+            if(g_showMask==1 && m_method != METHOD_PLANE)
             {
                 //cvShowImage("Mask", maskBack);
                 g_showMask=0;
@@ -680,7 +537,7 @@ int MainWindow::run(){
 
     delete letra;
     delete server;
-    delete CAL;
+    delete m_CAL;
     delete VP;
     delete BM;
     delete BACK;
@@ -692,3 +549,33 @@ int MainWindow::run(){
     return 0;
 }
 
+
+void MainWindow::on_setPlaneButton_clicked()
+{
+    g_calZona = 1;
+    m_method = METHOD_PLANE;
+}
+
+void MainWindow::on_maskSlider_valueChanged(int value)
+{
+    g_espacio = value;
+    callBackAgrandar(value);
+
+}
+
+void MainWindow::on_planeSlider_valueChanged(int value)
+{
+    g_movPlano = value;
+    callBackAgrandar(value);
+}
+
+void MainWindow::on_saveButton_clicked()
+{
+    saveParameters(-1, NULL);
+}
+
+void MainWindow::on_calibrationButton_clicked()
+{
+    if(m_CAL)
+        callBackPoint(-1, (void*) m_CAL);
+}

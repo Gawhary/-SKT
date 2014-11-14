@@ -2,7 +2,7 @@
 <Parameters>
     <Values>
         <Blob-Detection Min-Distance="55" Max-Distance="230" Min-Blob-Area="0" Background-Accepted-Variance="300" Maximum-Number-Of-Blobs="100" />
-        <Affine-Calibration X-X="119" Y-Y="74" X-X-X="203" Y-Y-Y="199" X-Y="100" Y-X="104" Alpha="26" />
+        <Affine-Calibration Alpha="26" />
         <Tuio-Info Host="localhost" Port="3333" />
         <Point-Calibration Number-Of-Calibration-Points="5" />
     </Values>
