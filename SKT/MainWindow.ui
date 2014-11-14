@@ -46,6 +46,12 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1">
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -66,7 +72,7 @@
             <item>
              <widget class="QSlider" name="image_depthSlider">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -177,12 +183,9 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Preferred</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>30</width>
+            <width>10</width>
             <height>20</height>
            </size>
           </property>

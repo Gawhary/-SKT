@@ -41,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui.setupUi(this);
     ui.distSlider->setMaximum(1000);
     ui.distSlider->setMinimum(0);
-    ui.distSlider->setLowerValue(55);
     ui.distSlider->setUpperValue(230);
+    ui.distSlider->setLowerValue(55);
     ui.MinSlider->setValue(80);
     ui.image_depthSlider->setValue(100);
     QTimer::singleShot(0,this, SLOT(run()));

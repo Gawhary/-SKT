@@ -223,9 +223,6 @@
     <ClCompile Include="qxtspanslider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qxtglobal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_qxtspanslider_p.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>

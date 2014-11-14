@@ -25,8 +25,8 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -215,7 +215,6 @@
     <ClCompile Include="include\TUIO\TuioTime.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="mouseactions.cpp" />
-    <ClCompile Include="qxtglobal.cpp" />
     <ClCompile Include="qxtspanslider.cpp" />
     <ClCompile Include="ransacfit.cpp" />
     <ClCompile Include="SKT.cpp" />

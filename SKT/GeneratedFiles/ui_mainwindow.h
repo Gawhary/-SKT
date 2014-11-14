@@ -42,29 +42,29 @@ public:
     QVBoxLayout *verticalLayout;
     QHBoxLayout *imageDepthLayout;
     QLabel *label_5;
-    QSlider *horizontalSlider_4;
+    QSlider *image_depthSlider;
     QLabel *label_6;
     QHBoxLayout *distLayout;
     QLabel *label;
     QxtSpanSlider *distSlider;
     QHBoxLayout *checkBoxLayout;
     QCheckBox *flipCheckBox;
-    QCheckBox *checkBox_2;
+    QCheckBox *showPlaneCheckBox;
     QHBoxLayout *buttonLayout;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
+    QPushButton *setPlaneButton;
+    QPushButton *calibrationButton;
+    QPushButton *saveButton;
     QSpacerItem *horizontalSpacer;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *minLayout;
     QLabel *label_2;
-    QSlider *horizontalSlider;
+    QSlider *MinSlider;
     QHBoxLayout *planLayout;
     QLabel *label_3;
-    QSlider *horizontalSlider_2;
+    QSlider *planeSlider;
     QHBoxLayout *maskLayout;
     QLabel *label_4;
-    QSlider *horizontalSlider_3;
+    QSlider *maskSlider;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -97,6 +97,7 @@ public:
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(5, -1, 5, -1);
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         imageDepthLayout = new QHBoxLayout();
@@ -107,12 +108,12 @@ public:
 
         imageDepthLayout->addWidget(label_5);
 
-        horizontalSlider_4 = new QSlider(container);
-        horizontalSlider_4->setObjectName(QString::fromUtf8("horizontalSlider_4"));
-        horizontalSlider_4->setEnabled(false);
-        horizontalSlider_4->setOrientation(Qt::Horizontal);
+        image_depthSlider = new QSlider(container);
+        image_depthSlider->setObjectName(QString::fromUtf8("image_depthSlider"));
+        image_depthSlider->setEnabled(true);
+        image_depthSlider->setOrientation(Qt::Horizontal);
 
-        imageDepthLayout->addWidget(horizontalSlider_4);
+        imageDepthLayout->addWidget(image_depthSlider);
 
         label_6 = new QLabel(container);
         label_6->setObjectName(QString::fromUtf8("label_6"));
@@ -144,38 +145,39 @@ public:
         checkBoxLayout->setObjectName(QString::fromUtf8("checkBoxLayout"));
         flipCheckBox = new QCheckBox(container);
         flipCheckBox->setObjectName(QString::fromUtf8("flipCheckBox"));
-        flipCheckBox->setEnabled(false);
+        flipCheckBox->setEnabled(true);
 
         checkBoxLayout->addWidget(flipCheckBox);
 
-        checkBox_2 = new QCheckBox(container);
-        checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
-        checkBox_2->setEnabled(false);
+        showPlaneCheckBox = new QCheckBox(container);
+        showPlaneCheckBox->setObjectName(QString::fromUtf8("showPlaneCheckBox"));
+        showPlaneCheckBox->setEnabled(true);
+        showPlaneCheckBox->setChecked(true);
 
-        checkBoxLayout->addWidget(checkBox_2);
+        checkBoxLayout->addWidget(showPlaneCheckBox);
 
 
         verticalLayout->addLayout(checkBoxLayout);
 
         buttonLayout = new QHBoxLayout();
         buttonLayout->setObjectName(QString::fromUtf8("buttonLayout"));
-        pushButton = new QPushButton(container);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setEnabled(false);
+        setPlaneButton = new QPushButton(container);
+        setPlaneButton->setObjectName(QString::fromUtf8("setPlaneButton"));
+        setPlaneButton->setEnabled(false);
 
-        buttonLayout->addWidget(pushButton);
+        buttonLayout->addWidget(setPlaneButton);
 
-        pushButton_2 = new QPushButton(container);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setEnabled(false);
+        calibrationButton = new QPushButton(container);
+        calibrationButton->setObjectName(QString::fromUtf8("calibrationButton"));
+        calibrationButton->setEnabled(false);
 
-        buttonLayout->addWidget(pushButton_2);
+        buttonLayout->addWidget(calibrationButton);
 
-        pushButton_3 = new QPushButton(container);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setEnabled(false);
+        saveButton = new QPushButton(container);
+        saveButton->setObjectName(QString::fromUtf8("saveButton"));
+        saveButton->setEnabled(true);
 
-        buttonLayout->addWidget(pushButton_3);
+        buttonLayout->addWidget(saveButton);
 
 
         verticalLayout->addLayout(buttonLayout);
@@ -183,7 +185,7 @@ public:
 
         horizontalLayout->addLayout(verticalLayout);
 
-        horizontalSpacer = new QSpacerItem(30, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(10, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 
@@ -197,13 +199,13 @@ public:
 
         minLayout->addWidget(label_2);
 
-        horizontalSlider = new QSlider(container);
-        horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
-        horizontalSlider->setEnabled(false);
-        horizontalSlider->setMinimumSize(QSize(100, 0));
-        horizontalSlider->setOrientation(Qt::Horizontal);
+        MinSlider = new QSlider(container);
+        MinSlider->setObjectName(QString::fromUtf8("MinSlider"));
+        MinSlider->setEnabled(true);
+        MinSlider->setMinimumSize(QSize(100, 0));
+        MinSlider->setOrientation(Qt::Horizontal);
 
-        minLayout->addWidget(horizontalSlider);
+        minLayout->addWidget(MinSlider);
 
 
         verticalLayout_2->addLayout(minLayout);
@@ -216,12 +218,12 @@ public:
 
         planLayout->addWidget(label_3);
 
-        horizontalSlider_2 = new QSlider(container);
-        horizontalSlider_2->setObjectName(QString::fromUtf8("horizontalSlider_2"));
-        horizontalSlider_2->setEnabled(false);
-        horizontalSlider_2->setOrientation(Qt::Horizontal);
+        planeSlider = new QSlider(container);
+        planeSlider->setObjectName(QString::fromUtf8("planeSlider"));
+        planeSlider->setEnabled(true);
+        planeSlider->setOrientation(Qt::Horizontal);
 
-        planLayout->addWidget(horizontalSlider_2);
+        planLayout->addWidget(planeSlider);
 
 
         verticalLayout_2->addLayout(planLayout);
@@ -234,12 +236,12 @@ public:
 
         maskLayout->addWidget(label_4);
 
-        horizontalSlider_3 = new QSlider(container);
-        horizontalSlider_3->setObjectName(QString::fromUtf8("horizontalSlider_3"));
-        horizontalSlider_3->setEnabled(false);
-        horizontalSlider_3->setOrientation(Qt::Horizontal);
+        maskSlider = new QSlider(container);
+        maskSlider->setObjectName(QString::fromUtf8("maskSlider"));
+        maskSlider->setEnabled(true);
+        maskSlider->setOrientation(Qt::Horizontal);
 
-        maskLayout->addWidget(horizontalSlider_3);
+        maskLayout->addWidget(maskSlider);
 
 
         verticalLayout_2->addLayout(maskLayout);
@@ -269,11 +271,11 @@ public:
         label_5->setText(QApplication::translate("MainWindow", "Image", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("MainWindow", "Depth", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "Dist.", 0, QApplication::UnicodeUTF8));
-        flipCheckBox->setText(QApplication::translate("MainWindow", "Flip", 0, QApplication::UnicodeUTF8));
-        checkBox_2->setText(QApplication::translate("MainWindow", "Plane", 0, QApplication::UnicodeUTF8));
-        pushButton->setText(QApplication::translate("MainWindow", "Set Plane", 0, QApplication::UnicodeUTF8));
-        pushButton_2->setText(QApplication::translate("MainWindow", "Calipration", 0, QApplication::UnicodeUTF8));
-        pushButton_3->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
+        flipCheckBox->setText(QApplication::translate("MainWindow", "Flip input", 0, QApplication::UnicodeUTF8));
+        showPlaneCheckBox->setText(QApplication::translate("MainWindow", "Show Plane", 0, QApplication::UnicodeUTF8));
+        setPlaneButton->setText(QApplication::translate("MainWindow", "Set Plane", 0, QApplication::UnicodeUTF8));
+        calibrationButton->setText(QApplication::translate("MainWindow", "Calibration", 0, QApplication::UnicodeUTF8));
+        saveButton->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("MainWindow", "Min", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("MainWindow", "Plane", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("MainWindow", "Mask", 0, QApplication::UnicodeUTF8));
