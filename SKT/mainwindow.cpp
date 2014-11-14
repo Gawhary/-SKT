@@ -398,12 +398,6 @@ int MainWindow::run(){
     IplImage* sal=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
     IplImage* sal0=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
 
-    // @Gawhary: Make large container image for iRGB, paBlobs and thin (20 pixel) margin
-    IplImage* iRGB_paBlobs=cvCreateImage(
-                cvSize(iRGB->width + paBlobs->width + g_imageDisplayMargin,max(iRGB->height, paBlobs->height)),
-                IPL_DEPTH_8U, 3);
-    cvSet(iRGB_paBlobs, cvScalar(200,200,200));
-
     /////////////////////////////////////////////////////////////////
 
 
@@ -456,19 +450,7 @@ int MainWindow::run(){
             if(g_showRGB==1)
             {
                 capture.retrieve(imgRGB,CV_CAP_OPENNI_BGR_IMAGE);
-                //@ Gawhary: Check retrieved image size and recreate container if needed
-                IplImage temp = imgRGB;
-                if(imgRGB.cols > iRGB->width		||
-                        imgRGB.rows > iRGB->height		||
-                        temp.depth != iRGB->depth	||
-                        temp.nChannels != iRGB->nChannels	){
-                    // ToDo: check image depth and channels
-
-                    // ToDo: delete and recreate iRGB_paBlobs
-                    return -1;
-
-                }
-                *iRGB=temp;
+                *iRGB=imgRGB;
                 affineWarperAndMixer(warpAffin,iRGB,iRGBaux,iRGBaux2,(float)g_alpha/100,nue);
                 CAL->drawZone((g_showArea==1),iRGB);
             }
@@ -584,15 +566,7 @@ int MainWindow::run(){
 
             if(g_showPaBlobs==1 && !CAL->occupied() && !BACK->contVal())
             {
-                // @Gawhary Copy To Blobs image to container
-                cvSetImageROI(iRGB_paBlobs, cvRect(iRGB->width + g_imageDisplayMargin,
-                                                   0,paBlobs->width,paBlobs->height) );
-                // ToDo: convert image channels
-                //cvCopy(paBlobs,iRGB_paBlobs,NULL);
-                cvCvtColor(paBlobs, iRGB_paBlobs, CV_GRAY2RGB);
-                cvResetImageROI(iRGB_paBlobs);
-//                cvShowImage("Tracker", iRGB_paBlobs);
-                ui.RgbImage->showImage(iRGB_paBlobs);
+                ui.toBlobsImage->showImage(paBlobs, false);
             }
             blobs=0;
             cvClearMemStorage( g_storage );
@@ -662,13 +636,7 @@ int MainWindow::run(){
 //                    cvDisplayOverlay("Tracker",help , 100);
                 }
 
-                // @Gawhary Copy iRGB image to container
-                cvSetImageROI(iRGB_paBlobs, cvRect(0, 0,iRGB->width,iRGB->height) );
-                cvCopy(iRGB,iRGB_paBlobs,NULL);
-                cvResetImageROI(iRGB_paBlobs);
-
-//                cvShowImage("Tracker", iRGB_paBlobs);
-                ui.RgbImage->showImage(iRGB_paBlobs);
+                ui.RgbImage->showImage(iRGB);
             }
             if(g_showFondo==1)
             {

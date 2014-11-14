@@ -16,10 +16,10 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="CvImageWidget" name="RgbImage" native="true"/>
+     <widget class="CvImageWidgetGL" name="RgbImage" native="true"/>
     </item>
     <item>
-     <widget class="CvImageWidget" name="toBlobsImage" native="true"/>
+     <widget class="CvImageWidgetGL" name="toBlobsImage" native="true"/>
     </item>
    </layout>
   </widget>
@@ -27,9 +27,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CvImageWidget</class>
+   <class>CvImageWidgetGL</class>
    <extends>QWidget</extends>
-   <header location="global">cvimagewidget.h</header>
+   <header>cvimagewidgetgl.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

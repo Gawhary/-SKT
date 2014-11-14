@@ -18,7 +18,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QStatusBar>
 #include <QtGui/QWidget>
-#include <cvimagewidget.h>
+#include "cvimagewidgetgl.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -27,8 +27,8 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
-    CvImageWidget *RgbImage;
-    CvImageWidget *toBlobsImage;
+    CvImageWidgetGL *RgbImage;
+    CvImageWidgetGL *toBlobsImage;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -40,12 +40,12 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        RgbImage = new CvImageWidget(centralwidget);
+        RgbImage = new CvImageWidgetGL(centralwidget);
         RgbImage->setObjectName(QString::fromUtf8("RgbImage"));
 
         horizontalLayout->addWidget(RgbImage);
 
-        toBlobsImage = new CvImageWidget(centralwidget);
+        toBlobsImage = new CvImageWidgetGL(centralwidget);
         toBlobsImage->setObjectName(QString::fromUtf8("toBlobsImage"));
 
         horizontalLayout->addWidget(toBlobsImage);

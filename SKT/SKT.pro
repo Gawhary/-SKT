@@ -6,17 +6,17 @@ TEMPLATE = app
 TARGET = SKT
 DESTDIR = ../Release
 QT += core gui opengl
-CONFIG += debug
+CONFIG += release
+CONFIG -= debug
 DEFINES += _WIN32_WINNT=0x0501 _CONSOLE QT_OPENGL_LIB
-DEFINES *= _AFXDLL _MBCS
 SolutionDir = ..
 INCLUDEPATH += $(SolutionDir)/SKT \
     $${SolutionDir}/SKT/include/TUIO \
     $${SolutionDir}/SKT/include/tinyXML \
     $${SolutionDir}/SKT/include/oscpack \
     $${SolutionDir}/SKT/include \
-    ./GeneratedFiles \
     .
+
 LIBS += -L"$${SolutionDir}/SKT/lib/openCV/x86/vc10/lib" \
     -L"./lib/openCV/x86/vc10/bin" \
     -L"$(QTDIR)/bin" \
@@ -33,14 +33,13 @@ LIBS += -L"$${SolutionDir}/SKT/lib/openCV/x86/vc10/lib" \
     -lnetapi32 \
     -lopengl32 \
     -lglu32
+
 PRECOMPILED_HEADER = StdAfx.h
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
 include(SKT.pri)
 
 HEADERS +=
 
 SOURCES +=
+

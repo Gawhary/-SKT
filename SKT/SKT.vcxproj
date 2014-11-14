@@ -79,7 +79,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories>.\lib\openCV\x86\vc10\lib;.\lib\openCV\x86\vc10\bin;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\lib\Release;C:\Users\lojkoro\Desktop\OpenCVBuild\OpenCV2.3.1Build\bin\Release;C:\Program Files\PrimeSense\SensorKinect\Bin;C:\Program Files\OpenNI\Bin;$(QTDIR)\bin;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;opencv_imgproc231.lib;opencv_core231.lib;opencv_video231.lib;opencv_highgui231.lib;atlsd.lib;ws2_32.lib;msvcrt.lib;winmm.lib;libcpmtd.lib;netapi32.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;QtCored4.lib;QtGuid4.lib;QtOpenGLd4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;opencv_imgproc231.lib;opencv_core231.lib;opencv_video231.lib;opencv_highgui231.lib;atlsd.lib;ws2_32.lib;msvcrt.lib;winmm.lib;libcpmtd.lib;netapi32.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;QtOpenGL4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
