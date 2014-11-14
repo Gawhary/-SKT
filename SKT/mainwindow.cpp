@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_method=METHOD_BACKGROUND;
     m_CAL=NULL;
     ui.setupUi(this);
-    ui.distSlider->setMaximum(1000);
+    ui.distSlider->setMaximum(10000);
     ui.distSlider->setMinimum(0);
     ui.distSlider->setUpperValue(230);
     ui.distSlider->setLowerValue(55);
@@ -306,22 +306,7 @@ int MainWindow::run(){
         return -1;
     }
 
-    /*Parameters for processing*/
-    //cvCreateButton("Set Zone",callBackButton,&g_calZona,CV_PUSH_BUTTON);
-    //cvCreateButton("Save Parameters",saveParameters,NULL,CV_PUSH_BUTTON);
-    //cvCreateButton("Background Method",NULL,NULL,CV_RADIOBOX,1);
-    //cvCreateButton("Plane Method",callBackSetValue,&g_plano,CV_RADIOBOX,0);
-    //cvCreateButton("Threshold ",callBackSetValue,&g_threshold,CV_RADIOBOX,0);
-//    cvCreateTrackbar("Min Dist.","Tracker",&g_min,10000);
-//    cvCreateTrackbar("Max Dist.","Tracker",&g_max,10000);
-    //    cvCreateButton("Start Point Calibration",callBackPoint,(void*) CAL,CV_PUSH_BUTTON);
-    //	//createButton("FishEye",callBackSetValue,&g_fisheye,CV_CHECKBOX,0);
-    //	//cvCreateTrackbar("K",NULL,&g_k,100000,callBackAgrandar);
-//    cvSetMouseCallback("Tracker",MouseEvWrapper,(void*) CAL);
-
-
     /*Several image definitions needed...*/
-
 
     Mat imgMap,maskMap,imgRGB,disp,imgMapRemaped,imgRGBRemaped;
     CvMat iMap;
