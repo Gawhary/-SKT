@@ -20,6 +20,16 @@ private:
     Ui::MainWindow ui;
     bool m_exit;
 
+    void affineWarperAndMixer(CvMat *warp, IplImage *iRGB, IplImage *aux1, IplImage *aux2, float alpha, IplImage *gray);
+    void hacer0bordes(IplImage *in);
+    std::string loadParameters(bool all);
+    void saveParameters(int a, void *param);
+    void callBackPoint(int a, void *param);
+    void callBackAgrandar(int a);
+    void callBackSetValue(int a, void *param);
+    void callBackButton0(int a, void *param);
+    void MouseEvWrapper(int event, int x, int y, int flag, void *param);
+    void callBackButton(int a, void *param);
 };
 
 #endif // MAINWINDOW_H

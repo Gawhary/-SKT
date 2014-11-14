@@ -6,8 +6,6 @@
 #include <QPainter>
 #include <cv.h>
 
-#include "HiResTimer.h"
-
 class CvImageWidget : public QWidget
 {
     Q_OBJECT
@@ -27,7 +25,6 @@ protected:
 
     QImage _qimage;
     cv::Mat _tmp;
-    CHiResTimer timer;
 };
 
 #endif // CVIMAGEWIDGET_H

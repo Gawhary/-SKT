@@ -3,7 +3,6 @@
 
 
 CvImageWidget::CvImageWidget(QWidget *parent) : QWidget(parent) {
-    timer.Init();
 }
 
 QSize CvImageWidget::sizeHint() const { return _qimage.size(); }
@@ -11,7 +10,6 @@ QSize CvImageWidget::sizeHint() const { return _qimage.size(); }
 QSize CvImageWidget::minimumSizeHint() const { return _qimage.size(); }
 
 void CvImageWidget::showImage(const cv::Mat &image) {
-    timer.GetElapsedMilliSeconds();
     // Convert the image to the RGB888 format
     switch (image.type()) {
     case CV_8UC1:
@@ -32,11 +30,6 @@ void CvImageWidget::showImage(const cv::Mat &image) {
     this->setFixedSize(image.cols, image.rows);
 
     repaint();
-
-            double et = timer.GetElapsedMilliSeconds();
-            qDebug() << "Converting time: " << et;
-            if(et)
-                qDebug() << "FPS: " << 1000.0/et;
 }
 
 void CvImageWidget::showImage(IplImage *image)

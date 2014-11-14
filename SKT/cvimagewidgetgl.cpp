@@ -7,7 +7,6 @@ using namespace cv;
 CvImageWidgetGL::CvImageWidgetGL(QWidget *parent)
     : QGLWidget(parent)
 {
-    timer.Init();
 
     image.create(480,640,CV_8UC3);
     color=true;
@@ -41,7 +40,6 @@ void CvImageWidgetGL::showImage(IplImage *pImg, bool col){
 
 void CvImageWidgetGL::showImage(Mat img, bool col)
 {
-    timer.GetElapsedMilliSeconds();
     //cout << "up 0" << endl;
     color=col;
     if(useglfix)
@@ -74,16 +72,14 @@ void CvImageWidgetGL::showImage(Mat img, bool col)
 
 QPixmap CvImageWidgetGL::toPixmap(IplImage *cvimage) {
 
-    timer.GetElapsedMilliSeconds();
     unsigned char* qImageBuffer = (unsigned char*)(cvimage->imageData);
     QImage tempImage((const unsigned char*)qImageBuffer, cvimage->width, cvimage->height, cvimage->widthStep, QImage::Format_RGB888);
     QPixmap tempPixmap;
     tempPixmap.convertFromImage( (tempImage).rgbSwapped() );
 
-    double et = timer.GetElapsedMilliSeconds();
-    qDebug() << "Converting time: " << et;
-    if(et)
-        qDebug() << "FPS: " << 1000.0/et;
+//    qDebug() << "Converting time: " << et;
+//    if(et)
+//        qDebug() << "FPS: " << 1000.0/et;
 
     return tempPixmap;
 
@@ -124,7 +120,6 @@ QPixmap CvImageWidgetGL::toPixmap(IplImage *cvimage) {
 
 //    QPixmap tempPixmap = QPixmap::fromImage(m_image);
 
-//    double et = timer.GetElapsedMilliSeconds();
 //    qDebug() << "Converting time: " << et;
 //    if(et)
 //        qDebug() << "FPS: " << 1000.0/et;
@@ -147,7 +142,6 @@ void CvImageWidgetGL::paintGL()
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-//        timer.GetElapsedMilliSeconds();
 
     if(color)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols, image.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
@@ -155,7 +149,6 @@ void CvImageWidgetGL::paintGL()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, image.cols, image.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image.data);
 
 
-//        double et = timer.GetElapsedMilliSeconds();
 //        qDebug() << "Converting time: " << et;
 //        if(et)
 //            qDebug() << "FPS: " << 1000.0/et;

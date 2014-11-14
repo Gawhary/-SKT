@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent)
       m_exit(false)
 {
     ui.setupUi(this);
+    ui.distSlider->setMaximum(1000);
+    ui.distSlider->setMinimum(0);
+    ui.distSlider->setLowerValue(55);
+    ui.distSlider->setUpperValue(230);
     QTimer::singleShot(0,this, SLOT(run()));
 
 }
@@ -54,8 +58,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 
 int g_imageDisplayMargin=10; // @Gawhary: Margins between multi-images in one window
-int g_min=55;         //Min threeshold for selection of pixels near interaction zone. Divided by 10000.
-int g_max=230;         //Max threeshold for selection of pixels near interaction zone. Divided by 10000.
+//int g_min=55;         //Min threeshold for selection of pixels near interaction zone. Divided by 10000.
+//int g_max=230;         //Max threeshold for selection of pixels near interaction zone. Divided by 10000.
 int g_maxBlob=50;       //Max blob area for filter. NOT IMPLEMENTED
 int g_minBlob=80;      //Min blob area for blob filter.
 int g_thre=0;           //Threeshold for last image. Almost not used...
@@ -118,7 +122,7 @@ char* help="Press Ctrl+p for settings.\n"
            "Blob ID=0 moves and ID=1 presses the left button.\n"
            "The number of blobs and calibration points can be modified in settings.xml\n"
            "Press ESC on any window to exit.";
-void affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* aux2,float alpha,IplImage* gray)
+void MainWindow::affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* aux2,float alpha,IplImage* gray)
 {
     //Deprecated, now OpenCV does the fit.
     //cvWarpAffine(iRGB,aux2,warp);
@@ -128,7 +132,7 @@ void affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* au
 }
 
 /*hacer0bordes : Function to set the pixels in the border of the image to 0 for blobs to close*/
-void hacer0bordes(IplImage* in)
+void MainWindow::hacer0bordes(IplImage* in)
 {
     int x=0,y=0,wi=in->width,he=in->height;
     uchar* ptr = ((uchar*)(in->imageData + in->widthStep*(y+he-1)));
@@ -151,7 +155,7 @@ void hacer0bordes(IplImage* in)
     }
 }
 /*Function to load parameters*/
-std::string loadParameters(bool all)
+std::string MainWindow::loadParameters(bool all)
 {
     int read=0;
     TiXmlDocument doc( "settings.xml" );
@@ -165,8 +169,10 @@ std::string loadParameters(bool all)
         TiXmlElement * tuioInfo=valores->FirstChildElement("Tuio-Info");
         TiXmlElement * pointCal=valores->FirstChildElement("Point-Calibration");
         if(all){
-            read=blobDet->QueryIntAttribute("Min-Distance",&g_min);
-            read=blobDet->QueryIntAttribute("Max-Distance",&g_max);
+            int min = ui.distSlider->lowerValue();
+            int max = ui.distSlider->upperValue();
+            read=blobDet->QueryIntAttribute("Min-Distance",&min);
+            read=blobDet->QueryIntAttribute("Max-Distance",&max);
             read=blobDet->QueryIntAttribute("Min-Blob-Area",&g_minBlob);
             read=blobDet->QueryIntAttribute("Background-Accepted-Variance",&g_var);
             read=blobDet->QueryIntAttribute("Maximum-Number-Of-Blobs",&g_maxNumBlobs);
@@ -183,6 +189,9 @@ std::string loadParameters(bool all)
             read=tuioInfo->QueryIntAttribute("Port",&g_port);
             read=pointCal->QueryIntAttribute("Number-Of-Calibration-Points",&g_numPoints);
             cout << "Parameter file: settings.xml - Loaded!" << endl;
+
+            ui.distSlider->setLowerValue(min);
+            ui.distSlider->setUpperValue(max);
         }
         return tuioInfo->Attribute("Host");
     }
@@ -193,7 +202,7 @@ std::string loadParameters(bool all)
     return "localhost";
 }
 /*FUNCTION TO SAVE PARAMETERS*/
-void saveParameters(int a,void* param)
+void MainWindow::saveParameters(int a,void* param)
 {
     TiXmlDocument doc;
     TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "", "" );
@@ -210,8 +219,8 @@ void saveParameters(int a,void* param)
     valores->LinkEndChild( affineVal );
     valores->LinkEndChild( tuioInfo );
     valores->LinkEndChild( pointCal );
-    blobDet->SetAttribute("Min-Distance", g_min);
-    blobDet->SetAttribute("Max-Distance", g_max);
+    blobDet->SetAttribute("Min-Distance", ui.distSlider->lowerValue());
+    blobDet->SetAttribute("Max-Distance", ui.distSlider->upperValue());
     blobDet->SetAttribute("Min-Blob-Area", g_minBlob);
     blobDet->SetAttribute("Background-Accepted-Variance", g_var);
     blobDet->SetAttribute("Maximum-Number-Of-Blobs",g_maxNumBlobs);
@@ -229,31 +238,31 @@ void saveParameters(int a,void* param)
         cout << "Parameters could not be saved." << endl;
     }
 }
-void callBackPoint(int a,void* param)
+void MainWindow::callBackPoint(int a,void* param)
 {
     calibrator *MyCal=(calibrator*) param;
-//    MyCal->pointCalBegin("Tracker");
+    MyCal->pointCalBegin("Tracker");
 }
-void callBackAgrandar(int a)
+void MainWindow::callBackAgrandar(int a)
 {
     g_agrandar=true;
 }
-void callBackSetValue(int a,void* param)
+void MainWindow::callBackSetValue(int a,void* param)
 {
     int* valueToSet=(int*)param;
     *valueToSet=a;
 }
-void callBackButton(int a,void* param)
+void MainWindow::callBackButton(int a,void* param)
 {
     int* valueToSet=(int*)param;
     *valueToSet=1;
 }
-void callBackButton0(int a,void* param)
+void MainWindow::callBackButton0(int a,void* param)
 {
     int* valueToSet=(int*)param;
     *valueToSet=0;
 }
-void MouseEvWrapper(int event,int x,int y,int flag,void* param)
+void MainWindow::MouseEvWrapper(int event,int x,int y,int flag,void* param)
 {
     calibrator *MyCal=(calibrator*) param;
     MyCal->MouseEv(event,x,y,flag);
@@ -543,8 +552,8 @@ int MainWindow::run(){
                 //g_delta=100;
             }
             /////////////////////
-            cvThreshold(sal,sal,(double)g_min/10000,1.0,CV_THRESH_TOZERO);
-            cvThreshold(sal,sal,(double)g_max/10000,1.0,CV_THRESH_TOZERO_INV);
+            cvThreshold(sal,sal,(double)ui.distSlider->lowerValue()/10000,1.0,CV_THRESH_TOZERO);
+            cvThreshold(sal,sal,(double)ui.distSlider->upperValue()/10000,1.0,CV_THRESH_TOZERO_INV);
             cvConvertScale(sal,paBlobs,255*g_mult);
             ///////////////////////////////////////////////////////////////////////
 
@@ -596,9 +605,8 @@ int MainWindow::run(){
 
 //                setTrackbarPos("Min Dist.","Tracker", 0);
 //                setTrackbarPos("Max Dist.","Tracker", g_delta);
-
-                g_min = 0;
-                g_max = g_delta;
+                ui.distSlider->setLowerPosition(0);
+                ui.distSlider->setUpperPosition(g_delta);
             }
             else if(g_auto2==1 && nBlobsFound==2){
                 g_framesAuto++;
@@ -612,12 +620,12 @@ int MainWindow::run(){
             }
             else if(g_auto2==1){
                 g_framesAuto=0;
-                int minA=g_min;
+                int minA=ui.distSlider->lowerValue();
                 if((minA+10+g_delta)<10000){
 //                    setTrackbarPos("Min Dist.", "Tracker", (minA+20));
 //                    setTrackbarPos("Max Dist.", "Tracker", (minA+20+g_delta));
-                    g_min = minA+20;
-                    g_max = minA+20+g_delta;
+                    ui.distSlider->setLowerValue((minA+20));
+                    ui.distSlider->setUpperValue((minA+20+g_delta));
                 }
                 g_autoReps++;
             }
@@ -636,7 +644,7 @@ int MainWindow::run(){
 //                    cvDisplayOverlay("Tracker",help , 100);
                 }
 
-                ui.RgbImage->showImage(iRGB);
+                ui.rgbImage->showImage(iRGB);
             }
             if(g_showFondo==1)
             {
