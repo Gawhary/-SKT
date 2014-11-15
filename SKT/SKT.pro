@@ -8,7 +8,7 @@ DESTDIR = ../Release_Qt
 QT += core gui opengl
 CONFIG += release console
 CONFIG -= debug
-#DEFINES += _WIN32_WINNT=0x0501 _CONSOLE QT_OPENGL_LIB
+DEFINES += _WIN32_WINNT=0x0501 _CONSOLE QT_OPENGL_LIB
 SolutionDir = ..
 INCLUDEPATH += $(SolutionDir)/SKT \
     $${SolutionDir}/SKT/include/TUIO \
@@ -20,6 +20,8 @@ INCLUDEPATH += $(SolutionDir)/SKT \
 LIBS += -L"$${SolutionDir}/SKT/lib/openCV/x86/vc10/lib" \
     -L"./lib/openCV/x86/vc10/bin" \
     -L"$(QTDIR)/bin" \
+    -L"C:/Program Files/PrimeSense/SensorKinect/Bin" \
+    -L"C:/Program Files/OpenNI/Bin" \
     -luser32 \
     -lopencv_imgproc231 \
     -lopencv_core231 \
@@ -41,7 +43,6 @@ OBJECTS_DIR += release
 HEADERS += ./backmethod.h \
     ./blobmapper.h \
     ./calibrator.h \
-    ./HiResTimer.h \
     ./include/oscpack/ip/IpEndpointName.h \
     ./include/oscpack/ip/NetworkingUtils.h \
     ./include/oscpack/ip/PacketListener.h \

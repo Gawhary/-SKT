@@ -6,7 +6,6 @@
 #include <highgui.h>
 #include <stdio.h>
 #include <math.h>
-#include <time.h>
 #include <TuioServer.h>
 #include <TuioCursor.h>
 #include <TuioTime.h>
@@ -14,6 +13,7 @@
 #include <tinyxml.h>
 #include <tinystr.h>
 #include <string.h>
+#include <QMouseEvent>
 #include "mainwindow.h"
 
 #ifndef WIN32
@@ -27,6 +27,7 @@
 #include <backmethod.h>
 #include <mouseactions.h>
 #include <QTimer>
+
 using namespace cv;
 using namespace TUIO;
 using namespace std;
@@ -36,6 +37,27 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_exit(false)
 {
+    m_maxBlob=50;
+    m_thre=0;
+    m_mult=1;
+    m_var=300;
+    m_save=true;
+    m_calZona=0;
+    m_showFondo=0;
+    m_showMask=0;
+    m_showPlano=0;
+    m_espacio=100;
+    m_agrandar=false;
+    m_host;
+    m_port=3333;
+    m_maxNumBlobs=100;
+    m_numPoints=5;
+    m_auto2=0;
+    m_framesAuto=0;
+    m_movPlano=2000;
+    m_escala=6000;
+    m_fisheye=0;
+    m_k=0;
     m_method=METHOD_BACKGROUND;
     m_CAL=NULL;
     ui.setupUi(this);
@@ -45,6 +67,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui.distSlider->setLowerValue(55);
     ui.MinSlider->setValue(80);
     ui.image_depthSlider->setValue(100);
+
+    ui.rgbImage->installEventFilter(this); // to capture mouse events
+
     QTimer::singleShot(0,this, SLOT(run()));
 
 }
@@ -60,50 +85,28 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QApplication::exit(0);
 }
 
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == ui.rgbImage &&
+            (event->type() == QEvent::MouseButtonPress ||
+            event->type() == QEvent::MouseButtonRelease )
+        )
+    {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (event->type() == QEvent::MouseButtonPress ) {
+            // Special handling
+            return true;
+        } else if (event->type() == QEvent::MouseButtonPress ) {
+            // Special handling
+            return true;
+        }
+        else
+            return false;
+    }
+    return false;
+}
 
-int g_imageDisplayMargin=10; // @Gawhary: Margins between multi-images in one window
-//int g_min=55;         //Min threeshold for selection of pixels near interaction zone. Divided by 10000.
-//int g_max=230;         //Max threeshold for selection of pixels near interaction zone. Divided by 10000.
-int g_maxBlob=50;       //Max blob area for filter. NOT IMPLEMENTED
-int g_thre=0;           //Threeshold for last image. Almost not used...
-int g_mult=1;           //Multiplier for scale adjust of images. Not used...
-int g_var=300;         //Minimum variance for pixels in the background allowed. Divided by 100000 after.
-bool g_save=true;
-int g_calZona=0;        //Zone calibration toggle.
-int g_showFondo=0;
-int g_showMask=0;
-int g_showPlano=0;
-int g_espacio=100;
-bool g_agrandar=false;
-const char* g_host;
-int g_port=3333;
-int g_maxNumBlobs=100;
-int g_numPoints=5;
-int g_auto2=0;
-int g_framesAuto=0;
-int g_movPlano=2000;
-int g_escala=6000;
-int g_fisheye=0;
-int g_k=0;
-clock_t inicio,fin;
-char* help="Press Ctrl+p for settings.\n"
-           "To change TUIO info edit settings.xml file\n"
-           "Min Dist -> Min distance from interaction zone.\n"
-           "Max Dist -> Max distance from interaction zone.\n"
-           "Min Blob -> Min blob area.\n"
-           "Deviation-> Min standard deviation of background pixs.\n"
-           "Module -> Absolute difference for blob extraction. \n"
-           "Mod-Zone -> Only negative differences (Module must be checked). \n"
-           "Use Plane -> Change extraction base to virtual plane (Created using Set Zone)\n"
-           "Threshold needs a zone before working.\n"
-           "Use Auto Min-Max when you feel confident you might get good blobs\n"
-           "at some value of Min-Max (good back or plane for example).\n"
-           "Auto Min-Max tries to find the best values where two blobs are visible,\n"
-           "so be sure to have two fingers (or hands) on the touch surface before activating it.\n"
-           "Mouse checkbox starts native mouse click and press events.\n"
-           "Blob ID=0 moves and ID=1 presses the left button.\n"
-           "The number of blobs and calibration points can be modified in settings.xml\n"
-           "Press ESC on any window to exit.";
+
 void MainWindow::affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* aux2,float alpha,IplImage* gray)
 {
     //Deprecated, now OpenCV does the fit.
@@ -158,13 +161,13 @@ std::string MainWindow::loadParameters(bool all)
             int _minBlob = ui.MinSlider->value();
             read=blobDet->QueryIntAttribute("Min-Blob-Area",&_minBlob);
             ui.MinSlider->setValue(_minBlob);
-            read=blobDet->QueryIntAttribute("Background-Accepted-Variance",&g_var);
-            read=blobDet->QueryIntAttribute("Maximum-Number-Of-Blobs",&g_maxNumBlobs);
+            read=blobDet->QueryIntAttribute("Background-Accepted-Variance",&m_var);
+            read=blobDet->QueryIntAttribute("Maximum-Number-Of-Blobs",&m_maxNumBlobs);
             int _alpha = ui.image_depthSlider->value();
             read=affineVal->QueryIntAttribute("Alpha",&_alpha);
             ui.image_depthSlider->setValue(_alpha);
-            read=tuioInfo->QueryIntAttribute("Port",&g_port);
-            read=pointCal->QueryIntAttribute("Number-Of-Calibration-Points",&g_numPoints);
+            read=tuioInfo->QueryIntAttribute("Port",&m_port);
+            read=pointCal->QueryIntAttribute("Number-Of-Calibration-Points",&m_numPoints);
             cout << "Parameter file: settings.xml - Loaded!" << endl;
 
             ui.distSlider->setLowerValue(_min);
@@ -199,12 +202,12 @@ void MainWindow::saveParameters(int a,void* param)
     blobDet->SetAttribute("Min-Distance", ui.distSlider->lowerValue());
     blobDet->SetAttribute("Max-Distance", ui.distSlider->upperValue());
     blobDet->SetAttribute("Min-Blob-Area", ui.MinSlider->value());
-    blobDet->SetAttribute("Background-Accepted-Variance", g_var);
-    blobDet->SetAttribute("Maximum-Number-Of-Blobs",g_maxNumBlobs);
+    blobDet->SetAttribute("Background-Accepted-Variance", m_var);
+    blobDet->SetAttribute("Maximum-Number-Of-Blobs",m_maxNumBlobs);
     affineVal->SetAttribute("Alpha", ui.image_depthSlider->value());
     tuioInfo->SetAttribute("Host",loadParameters(false).c_str());
-    tuioInfo->SetAttribute("Port",g_port);
-    pointCal->SetAttribute("Number-Of-Calibration-Points",g_numPoints);
+    tuioInfo->SetAttribute("Port",m_port);
+    pointCal->SetAttribute("Number-Of-Calibration-Points",m_numPoints);
     bool saveOk=doc.SaveFile( "settings.xml" );
     if(saveOk)
     {
@@ -222,7 +225,7 @@ void MainWindow::callBackPoint(int a,void* param)
 }
 void MainWindow::callBackAgrandar(int a)
 {
-    g_agrandar=true;
+    m_agrandar=true;
 }
 void MainWindow::callBackSetValue(int a,void* param)
 {
@@ -246,20 +249,21 @@ void MainWindow::MouseEvWrapper(int event,int x,int y,int flag,void* param)
 }
 
 int MainWindow::run(){
-    g_host=loadParameters(true).c_str();
-    if(g_numPoints>10 || g_numPoints<2){g_numPoints=5;
+    m_host=loadParameters(true).c_str();
+    if(m_numPoints>10 || m_numPoints<2){
+        m_numPoints=5;
         cout << "Invalid value for number of calibration points. Using 5." << endl;
     }
-    if(g_maxNumBlobs>1000 || g_maxNumBlobs<0){
+    if(m_maxNumBlobs>1000 || m_maxNumBlobs<0){
         cout << "Invalid value for max number of blobs. Using 50." << endl;
-        g_maxNumBlobs=50;}
-    cout << "Host : " << g_host << endl;
-    cout << "Port : " << g_port << endl;
+        m_maxNumBlobs=50;}
+    cout << "Host : " << m_host << endl;
+    cout << "Port : " << m_port << endl;
 
-    TuioServer *server=new TuioServer(g_host,g_port);
+    TuioServer *server=new TuioServer(m_host,m_port);
     virtualplane *VP=new virtualplane();
-    m_CAL=new calibrator(g_numPoints,640,480,5,5);
-    blobmapper* BM=new blobmapper(g_maxNumBlobs);
+    m_CAL=new calibrator(m_numPoints,640,480,5,5);
+    blobmapper* BM=new blobmapper(m_maxNumBlobs);
     backmethod* BACK=new backmethod();
 
     cout << "Screen : " << m_CAL->GetWidth() << ","<<  m_CAL->GetHeight() << endl;
@@ -288,7 +292,7 @@ int MainWindow::run(){
         delete VP;
         delete BM;
         delete BACK;
-        return -1;
+        QApplication::exit( -1 );
     }
     cout << "done." << endl;
     cout << "FPS Given by Device : " << capture.get(CV_CAP_PROP_FPS) << endl;
@@ -303,7 +307,7 @@ int MainWindow::run(){
         delete VP;
         delete BM;
         delete BACK;
-        return -1;
+        QApplication::exit( -1 );
     }
 
     /*Several image definitions needed...*/
@@ -328,17 +332,17 @@ int MainWindow::run(){
     /////////////////////////////////////////////////////////////////
 
 
-    g_showMask=0;
-    g_showFondo=0;
-    inicio=clock();
+    m_showMask=0;
+    m_showFondo=0;
+    m_inicio=clock();
     while(!m_exit)
     {
         ////////////////////////////////////////
 
         //Zone calibration starting point.
-        if(g_calZona==1)
+        if(m_calZona==1)
         {
-            g_calZona=0;
+            m_calZona=0;
             m_CAL->zoneCalBegin();
             for(int r=0; r<4; r++)
             {
@@ -373,34 +377,34 @@ int MainWindow::run(){
              *restricts pixels with less deviation than parameter set in "Parametros"
              *window divided by 10000. It also accumulates valid depth valid pixels.*/
 
-            if(BACK->proc((double)g_var/100000,nue,mask,Base,maskBack,iRGB,letra))
+            if(BACK->proc((double)m_var/100000,nue,mask,Base,maskBack,iRGB,letra))
             {
-                g_showMask=1;
-                g_showFondo=1;
+                m_showMask=1;
+                m_showFondo=1;
             }
             ///////////////////////////////////////////////////////////
 
             /*Calibration for valid zone. This reduces noise by selecting the interaction zone.
              *It also calibrates valid range for the output coordinates of the blobs.*/
-            if(m_CAL->zoneCal(iRGB,maskZona,maskBack,letra,g_espacio))
+            if(m_CAL->zoneCal(iRGB,maskZona,maskBack,letra,m_espacio))
             {
-                g_showMask=1;
+                m_showMask=1;
                 if(m_method == METHOD_PLANE){
                     VP->calcPlano(nue,maskZona,mask);
                     ////VP->calcPlano(Base,maskZona,maskBack);
                     VP->hacerPlano(plano,maskZona);
-                    g_showPlano=1;}
+                    m_showPlano=1;}
             }
             ///////////////////////////////////////////////////////////////////////
             ////ZONE ENLARGMENT AND PLANE MOVER FOR PLANE METHOD TO USE EVERY POINT////
-            if(g_agrandar)
+            if(m_agrandar)
             {
-                VP->SetPl(2,(double)(VP->GetPl(3)*((double)g_movPlano/1000-1.0)));
-                m_CAL->enlargeMask(maskZona,g_espacio);
-                g_agrandar=false;
-                g_showPlano=1;
+                VP->SetPl(2,(double)(VP->GetPl(3)*((double)m_movPlano/1000-1.0)));
+                m_CAL->enlargeMask(maskZona,m_espacio);
+                m_agrandar=false;
+                m_showPlano=1;
                 cvSetZero(plano);
-                VP->hacerPlano(plano,maskZona,g_fisheye,(double)g_k/10000000);
+                VP->hacerPlano(plano,maskZona,m_fisheye,(double)m_k/10000000);
             }
             //////////////////////////////////////////////////////////
             /*Point calibration.*/
@@ -418,7 +422,7 @@ int MainWindow::run(){
                 {
                     //cvShowImage("Plano",plano);
                     //cvShowImage("Mask",maskZona);
-                    g_showPlano=0;
+                    m_showPlano=0;
                 }
                 VP->distPlano(nue,sal,0,0);
                 //cvSub(plano,nue,sal);
@@ -432,10 +436,10 @@ int MainWindow::run(){
             }
             else
             {
-                if(g_showPlano==1)
+                if(m_showPlano==1)
                 {
                     //cvShowImage("Mask",maskZona);
-                    g_showPlano=0;
+                    m_showPlano=0;
                 }
                 cvZero(sal);
                 cvAnd(maskZona,mask,mask);
@@ -444,13 +448,13 @@ int MainWindow::run(){
             /////////////////////
             cvThreshold(sal,sal,(double)ui.distSlider->lowerValue()/10000.0,1.0,CV_THRESH_TOZERO);
             cvThreshold(sal,sal,(double)ui.distSlider->upperValue()/10000.0,1.0,CV_THRESH_TOZERO_INV);
-            cvConvertScale(sal,paBlobs,255*g_mult);
+            cvConvertScale(sal,paBlobs,255*m_mult);
             ///////////////////////////////////////////////////////////////////////
 
             /*This part prepares the selected pixels for blob detection by selecting only the valid values and
              *then procedes to calculate the blobs. Then a min area filter is performed on the blobs.*/
             hacer0bordes(paBlobs);
-            cvThreshold(paBlobs,paBlobs,g_thre,255,CV_THRESH_BINARY);
+            cvThreshold(paBlobs,paBlobs,m_thre,255,CV_THRESH_BINARY);
 
             if(m_method == METHOD_PLANE)
             {
@@ -488,26 +492,26 @@ int MainWindow::run(){
 
             ui.rgbImage->showImage(iRGB);
 
-            if(g_showFondo==1)
+            if(m_showFondo==1)
             {
                 //cvShowImage( "Background", Base);
-                g_showFondo=0;
+                m_showFondo=0;
             }
-            if(g_showMask==1 && m_method != METHOD_PLANE)
+            if(m_showMask==1 && m_method != METHOD_PLANE)
             {
                 //cvShowImage("Mask", maskBack);
-                g_showMask=0;
+                m_showMask=0;
             }
             if(timing==99)
             {
-                fin=clock();
+                m_fin=clock();
 #ifndef WIN32
                 cout << "FPS calculated : " << (double)100000000/(double)(fin-inicio) << endl;
 #else
-                cout << "FPS calculated : " << (double)100000/(double)(fin-inicio) << endl;
+                cout << "FPS calculated : " << (double)100000/(double)(m_fin-m_inicio) << endl;
 #endif
                 timing=0;
-                inicio=clock();
+                m_inicio=clock();
             }
             else
             {
@@ -537,20 +541,20 @@ int MainWindow::run(){
 
 void MainWindow::on_setPlaneButton_clicked()
 {
-    g_calZona = 1;
+    m_calZona = 1;
     m_method = METHOD_PLANE;
 }
 
 void MainWindow::on_maskSlider_valueChanged(int value)
 {
-    g_espacio = value;
+    m_espacio = value;
     callBackAgrandar(value);
 
 }
 
 void MainWindow::on_planeSlider_valueChanged(int value)
 {
-    g_movPlano = value;
+    m_movPlano = value;
     callBackAgrandar(value);
 }
 
