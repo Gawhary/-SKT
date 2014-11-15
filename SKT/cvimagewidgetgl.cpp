@@ -68,6 +68,16 @@ void CvImageWidgetGL::showImage(Mat img, bool col)
 
 }
 
+QPoint CvImageWidgetGL::mapToImage(const QPoint& pointToMap)
+{
+    if(!(width()&&height()))
+        return QPoint();
+    QPoint mapped(
+                (pointToMap.x() / width())*image.cols,
+                (pointToMap.y() / height())*image.rows);
+    return mapped;
+}
+
 
 
 QPixmap CvImageWidgetGL::toPixmap(IplImage *cvimage) {

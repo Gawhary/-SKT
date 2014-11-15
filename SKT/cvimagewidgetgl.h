@@ -19,6 +19,7 @@ public:
     QPixmap toPixmap(IplImage *);
     void showImage(IplImage *, bool color = true);
     void showImage(cv::Mat img, bool col = true);
+    QPoint mapToImage(const QPoint &pointToMap);
 protected:
     virtual void paintGL();
     virtual void initializeGL();

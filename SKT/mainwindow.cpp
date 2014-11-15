@@ -32,7 +32,6 @@ using namespace cv;
 using namespace TUIO;
 using namespace std;
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_exit(false)
@@ -71,7 +70,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui.rgbImage->installEventFilter(this); // to capture mouse events
 
     QTimer::singleShot(0,this, SLOT(run()));
-
 }
 
 MainWindow::~MainWindow()
@@ -89,23 +87,43 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
     if (object == ui.rgbImage &&
             (event->type() == QEvent::MouseButtonPress ||
-            event->type() == QEvent::MouseButtonRelease )
-        )
-    {
+            event->type() == QEvent::MouseButtonRelease )) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        if (event->type() == QEvent::MouseButtonPress ) {
-            // Special handling
-            return true;
-        } else if (event->type() == QEvent::MouseButtonPress ) {
-            // Special handling
-            return true;
-        }
-        else
-            return false;
-    }
-    return false;
-}
+//        map x and y to image
+        QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
+        int cvEvent;
+        switch (event->type()) {
+        case QEvent::MouseButtonPress:
+            if(mouseEvent->buttons()&Qt::LeftButton)
+                cvEvent = EVENT_LBUTTONDOWN;
+            else if(mouseEvent->buttons()&Qt::RightButton)
+                cvEvent = EVENT_RBUTTONDOWN;
+            else
+                return false;
+            break;
+        case QEvent::MouseButtonRelease:
+            if(mouseEvent->buttons()&Qt::LeftButton)
+                cvEvent = EVENT_LBUTTONUP;
+            else if(mouseEvent->buttons()&Qt::RightButton)
+                cvEvent = EVENT_RBUTTONUP;
+            else
+                return false;
+            break;
 
+        case QEvent::MouseMove:
+            cvEvent = EVENT_MOUSEMOVE;
+        default:
+            return false;
+        }
+        // send event
+        int flags = mouseEvent->buttons();
+        MouseEvWrapper(cvEvent, mapped.x(), mapped.y(),
+                       flags, (void*)m_CAL);
+        return true;
+    }
+    else
+        return false;
+}
 
 void MainWindow::affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* aux2,float alpha,IplImage* gray)
 {
@@ -331,7 +349,6 @@ int MainWindow::run(){
 
     /////////////////////////////////////////////////////////////////
 
-
     m_showMask=0;
     m_showFondo=0;
     m_inicio=clock();
@@ -523,7 +540,6 @@ int MainWindow::run(){
         QCoreApplication::processEvents();
     }
 
-
     delete letra;
     delete server;
     delete m_CAL;
@@ -537,7 +553,6 @@ int MainWindow::run(){
     //cvDestroyWindow("Plano");
     return 0;
 }
-
 
 void MainWindow::on_setPlaneButton_clicked()
 {

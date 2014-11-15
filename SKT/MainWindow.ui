@@ -147,7 +147,7 @@
             <item>
              <widget class="QPushButton" name="setPlaneButton">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string>Set Plane</string>
@@ -157,7 +157,7 @@
             <item>
              <widget class="QPushButton" name="calibrationButton">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string>Calibration</string>
