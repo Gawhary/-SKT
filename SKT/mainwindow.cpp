@@ -85,6 +85,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
+    if(event->type() == QEvent::KeyPress){
+        if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
+            if(ui.rgbImage->isFullScreen()){
+                ui.rgbImage->setFullscreen(false);
+            }
+        }
+    }
     if (object == ui.rgbImage &&
             (event->type() == QEvent::MouseButtonPress ||
             event->type() == QEvent::MouseButtonRelease )) {
@@ -301,16 +308,17 @@ int MainWindow::run(){
     {
         capture.open(CV_CAP_OPENNI);
     }
-    catch(exception e)
+    catch(...)
     {
         cout << endl << "Could not find any device." << endl;
         delete letra;
         delete server;
-        delete m_CAL;
+        delete m_CAL;m_CAL = NULL;
         delete VP;
         delete BM;
         delete BACK;
-        QApplication::exit( -1 );
+        QTimer::singleShot(1000, this, SLOT(run())); // try again later
+        return -1;
     }
     cout << "done." << endl;
     cout << "FPS Given by Device : " << capture.get(CV_CAP_PROP_FPS) << endl;
@@ -321,19 +329,19 @@ int MainWindow::run(){
         cout << "Could not open the device." << endl;
         delete letra;
         delete server;
-        delete m_CAL;
+        delete m_CAL;m_CAL = NULL;
         delete VP;
         delete BM;
         delete BACK;
-        QApplication::exit( -1 );
+        QTimer::singleShot(1000, this, SLOT(run())); // try again later
+        return -1;
     }
 
     /*Several image definitions needed...*/
 
-    Mat imgMap,maskMap,imgRGB,disp,imgMapRemaped,imgRGBRemaped;
+    Mat imgMap,maskMap,imgRGB;
     CvMat iMap;
     IplImage* nue=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
-    IplImage* nue2=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
     IplImage* plano=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
     IplImage* Base=cvCreateImage(cvSize(640,480),IPL_DEPTH_32F,1);
     IplImage* paBlobs=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,1);
@@ -546,11 +554,6 @@ int MainWindow::run(){
     delete VP;
     delete BM;
     delete BACK;
-//    cvDestroyWindow("Tracker");
-    //cvDestroyWindow("To Blobs");
-    //cvDestroyWindow("Background");
-    //cvDestroyWindow("Mask");
-    //cvDestroyWindow("Plano");
     return 0;
 }
 
@@ -580,6 +583,8 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_calibrationButton_clicked()
 {
-    if(m_CAL)
-        callBackPoint(-1, (void*) m_CAL);
+    if(!m_CAL)
+        return;
+    ui.rgbImage->setFullscreen();
+    callBackPoint(-1, (void*) m_CAL);
 }

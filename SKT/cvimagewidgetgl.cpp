@@ -1,5 +1,5 @@
 #include "cvimagewidgetgl.h"
-
+#include <QKeyEvent>
 #include <qdebug.h>
 using namespace cv;
 
@@ -78,64 +78,42 @@ QPoint CvImageWidgetGL::mapToImage(const QPoint& pointToMap)
     return mapped;
 }
 
+void CvImageWidgetGL::setFullscreen(bool fullscreen)
+{
+    static Qt::WindowFlags origWindowFlags;
+    static QSize orgSize;
+    static QWidget *orgParent;
+    if(fullscreen)
+    {
+        origWindowFlags = this->windowFlags();
+        orgSize = this->size();
+         this->setParent(0);
+         this->setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+         this->showMaximized();
+    }
+    else
+    {
+        this->setParent(orgParent);
+        this ->resize(orgSize);
+        this->overrideWindowFlags(origWindowFlags);
+        this->show();
+    }
+}
+
+bool CvImageWidgetGL::isFullScreen(){
+    return m_isFullscreen;
+}
+
 
 
 QPixmap CvImageWidgetGL::toPixmap(IplImage *cvimage) {
 
     unsigned char* qImageBuffer = (unsigned char*)(cvimage->imageData);
-    QImage tempImage((const unsigned char*)qImageBuffer, cvimage->width, cvimage->height, cvimage->widthStep, QImage::Format_RGB888);
+    QImage tempImage((const unsigned char*)qImageBuffer, cvimage->width,
+                     cvimage->height, cvimage->widthStep, QImage::Format_RGB888);
     QPixmap tempPixmap;
     tempPixmap.convertFromImage( (tempImage).rgbSwapped() );
-
-//    qDebug() << "Converting time: " << et;
-//    if(et)
-//        qDebug() << "FPS: " << 1000.0/et;
-
     return tempPixmap;
-
-//    int cvIndex, cvLineStart;
-
-//    switch (cvimage->depth) {
-//        case IPL_DEPTH_8U:
-//            switch (cvimage->nChannels) {
-//                case 3:
-//                    if ( (cvimage->width != m_image.width()) || (cvimage->height != m_image.height()) ) {
-//                        QImage temp(cvimage->width, cvimage->height, QImage::Format_RGB32);
-//                        m_image = temp;
-//                    }
-//                    cvIndex = 0; cvLineStart = 0;
-//                    for (int y = 0; y < cvimage->height; y++) {
-//                        unsigned char red,green,blue;
-//                        cvIndex = cvLineStart;
-//                        for (int x = 0; x < cvimage->width; x++) {
-//                            red = cvimage->imageData[cvIndex+2];
-//                            green = cvimage->imageData[cvIndex+1];
-//                            blue = cvimage->imageData[cvIndex+0];
-                            
-//                            m_image.setPixel(x,y,qRgb(red, green, blue));
-//                            cvIndex += 3;
-//                        }
-//                        cvLineStart += cvimage->widthStep;
-//                    }
-//                    break;
-//                default:
-//                    qWarning("This number of channels is not supported\n");
-//                    break;
-//            }
-//            break;
-//        default:
-//            qWarning("This type of IplImage is not implemented in QOpenCVWidget\n");
-//            break;
-//    }
-
-//    QPixmap tempPixmap = QPixmap::fromImage(m_image);
-
-//    qDebug() << "Converting time: " << et;
-//    if(et)
-//        qDebug() << "FPS: " << 1000.0/et;
-
-
-//    return tempPixmap;
 }
 
 
@@ -157,12 +135,6 @@ void CvImageWidgetGL::paintGL()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols, image.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     else
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, image.cols, image.rows, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image.data);
-
-
-//        qDebug() << "Converting time: " << et;
-//        if(et)
-//            qDebug() << "FPS: " << 1000.0/et;
-
 
     GLfloat maxX=1.0,maxY=1.0;
     if(useglfix){
@@ -196,4 +168,5 @@ void CvImageWidgetGL::resizeGL(int width, int height)
     glOrtho(-width, width, height, -height, -1.0, 1.0);
     isResized=true;
 }
+
 

@@ -20,6 +20,9 @@ public:
     void showImage(IplImage *, bool color = true);
     void showImage(cv::Mat img, bool col = true);
     QPoint mapToImage(const QPoint &pointToMap);
+    void setFullscreen(bool fullscreen = true);
+    bool isFullScreen();
+
 protected:
     virtual void paintGL();
     virtual void initializeGL();
@@ -30,6 +33,7 @@ private:
     bool color;
     float widthI,heightI;
     bool isResized;
+    bool m_isFullscreen;
 }; 
 
 #endif //CVIMAGEWIDGETGL_H
