@@ -27,6 +27,7 @@ protected:
     virtual void paintGL();
     virtual void initializeGL();
     virtual void resizeGL(int width, int height);
+    void keyPressEvent(QKeyEvent *event);
 private:
     cv::Mat image;
     bool useglfix;
@@ -34,6 +35,7 @@ private:
     float widthI,heightI;
     bool isResized;
     bool m_isFullscreen;
+    QSize m_imageSize;
 }; 
 
 #endif //CVIMAGEWIDGETGL_H

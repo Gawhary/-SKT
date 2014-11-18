@@ -40,6 +40,9 @@ void CvImageWidgetGL::showImage(IplImage *pImg, bool col){
 
 void CvImageWidgetGL::showImage(Mat img, bool col)
 {
+
+    m_imageSize.setHeight(img.rows);
+    m_imageSize.setWidth(img.cols);
     //cout << "up 0" << endl;
     color=col;
     if(useglfix)
@@ -70,16 +73,22 @@ void CvImageWidgetGL::showImage(Mat img, bool col)
 
 QPoint CvImageWidgetGL::mapToImage(const QPoint& pointToMap)
 {
-    if(!(width()&&height()))
+	double ww = this->width();
+	double wh = this->height();
+    if((ww == 0 || wh == 0))
+    {
         return QPoint();
+        qDebug() << "################################";
+    }
     QPoint mapped(
-                (pointToMap.x() / width())*image.cols,
-                (pointToMap.y() / height())*image.rows);
+                (pointToMap.x() / ww)*m_imageSize.width(),
+                (pointToMap.y() / wh)*m_imageSize.height());
     return mapped;
 }
 
 void CvImageWidgetGL::setFullscreen(bool fullscreen)
 {
+    return; // ToDo: delete
     static Qt::WindowFlags origWindowFlags;
     static QSize orgSize;
     static QWidget *orgParent;
@@ -90,6 +99,7 @@ void CvImageWidgetGL::setFullscreen(bool fullscreen)
          this->setParent(0);
          this->setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
          this->showMaximized();
+        setFocus(Qt::ActiveWindowFocusReason);
     }
     else
     {
@@ -97,6 +107,7 @@ void CvImageWidgetGL::setFullscreen(bool fullscreen)
         this ->resize(orgSize);
         this->overrideWindowFlags(origWindowFlags);
         this->show();
+        clearFocus();
     }
 }
 
@@ -167,6 +178,15 @@ void CvImageWidgetGL::resizeGL(int width, int height)
     glLoadIdentity();
     glOrtho(-width, width, height, -height, -1.0, 1.0);
     isResized=true;
+}
+
+void CvImageWidgetGL::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape){
+        if(m_isFullscreen){
+            setFullscreen(false);
+        }
+    }
 }
 
 

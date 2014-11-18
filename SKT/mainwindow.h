@@ -39,12 +39,7 @@ private:
     void hacer0bordes(IplImage *in);
     std::string loadParameters(bool all);
     void saveParameters(int a, void *param);
-    void callBackPoint(int a, void *param);
-    void callBackAgrandar(int a);
-    void callBackSetValue(int a, void *param);
-    void callBackButton0(int a, void *param);
     void MouseEvWrapper(int event, int x, int y, int flag, void *param);
-    void callBackButton(int a, void *param);
     Ui::MainWindow ui;
     bool m_exit;
     calibrator* m_CAL;
@@ -71,6 +66,8 @@ private:
     int m_fisheye;
     int m_k;
     clock_t m_inicio,m_fin;
+
+    Qt::MouseButtons m_pressedButton;
 
     enum {
         METHOD_BACKGROUND,

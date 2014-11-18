@@ -35,6 +35,8 @@ and to alter it and redistribute it freely, subject to the following restriction
 #include <tinyxml.h>
 #include <tinystr.h>
 
+#include "cvimagewidgetgl.h"
+
 #ifndef WIN32
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -65,8 +67,8 @@ public:
     bool zoneCal(IplImage *iRGB,IplImage* maskZona,IplImage* maskBack,CvFont *letra,int maskMult);
     void enlargeMask(IplImage* maskZona,int maskMul);
     void drawZone(bool show,IplImage* iRGB);
-    void pointCalBegin(const char* win);
-    void pointCal(IplImage* iRGB,CvFont *letra,const char* win);
+    void pointCalBegin(CvImageWidgetGL *win);
+    void pointCal(IplImage* iRGB, CvFont *letra, CvImageWidgetGL *win);
     void pointCalUpdate(int ID,float x, float y,double profundidad);
     void pointCalNew(int ID,float x, float y,double profundidad);
     void pointCalRemove(int ID);

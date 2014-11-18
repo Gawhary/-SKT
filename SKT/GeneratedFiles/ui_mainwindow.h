@@ -163,13 +163,13 @@ public:
         buttonLayout->setObjectName(QString::fromUtf8("buttonLayout"));
         setPlaneButton = new QPushButton(container);
         setPlaneButton->setObjectName(QString::fromUtf8("setPlaneButton"));
-        setPlaneButton->setEnabled(false);
+        setPlaneButton->setEnabled(true);
 
         buttonLayout->addWidget(setPlaneButton);
 
         calibrationButton = new QPushButton(container);
         calibrationButton->setObjectName(QString::fromUtf8("calibrationButton"));
-        calibrationButton->setEnabled(false);
+        calibrationButton->setEnabled(true);
 
         buttonLayout->addWidget(calibrationButton);
 

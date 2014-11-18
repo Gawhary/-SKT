@@ -27,6 +27,7 @@
 #include <backmethod.h>
 #include <mouseactions.h>
 #include <QTimer>
+#include <QDebug>
 
 using namespace cv;
 using namespace TUIO;
@@ -59,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_k=0;
     m_method=METHOD_BACKGROUND;
     m_CAL=NULL;
+    m_pressedButton = Qt::NoButton;
     ui.setupUi(this);
     ui.distSlider->setMaximum(10000);
     ui.distSlider->setMinimum(0);
@@ -89,6 +91,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
         if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
             if(ui.rgbImage->isFullScreen()){
                 ui.rgbImage->setFullscreen(false);
+                m_CAL->abortCal();
             }
         }
     }
@@ -97,35 +100,38 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
             event->type() == QEvent::MouseButtonRelease )) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
 //        map x and y to image
+        qDebug() << "Mouse Pos: " << mouseEvent->pos();
         QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
         int cvEvent;
         switch (event->type()) {
         case QEvent::MouseButtonPress:
-            if(mouseEvent->buttons()&Qt::LeftButton)
+            m_pressedButton = mouseEvent->buttons();
+            if(m_pressedButton&Qt::LeftButton)
                 cvEvent = EVENT_LBUTTONDOWN;
-            else if(mouseEvent->buttons()&Qt::RightButton)
+            else if(m_pressedButton&Qt::RightButton)
                 cvEvent = EVENT_RBUTTONDOWN;
             else
                 return false;
             break;
         case QEvent::MouseButtonRelease:
-            if(mouseEvent->buttons()&Qt::LeftButton)
+            if(m_pressedButton&Qt::LeftButton)
                 cvEvent = EVENT_LBUTTONUP;
-            else if(mouseEvent->buttons()&Qt::RightButton)
+            else if(m_pressedButton&Qt::RightButton)
                 cvEvent = EVENT_RBUTTONUP;
             else
                 return false;
             break;
 
-        case QEvent::MouseMove:
-            cvEvent = EVENT_MOUSEMOVE;
+//        case QEvent::MouseMove:
+//            cvEvent = EVENT_MOUSEMOVE;
+//            break;
         default:
             return false;
         }
         // send event
         int flags = mouseEvent->buttons();
-        MouseEvWrapper(cvEvent, mapped.x(), mapped.y(),
-                       flags, (void*)m_CAL);
+        m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
+        qDebug() << "Mouse Event filtered.";
         return true;
     }
     else
@@ -243,35 +249,9 @@ void MainWindow::saveParameters(int a,void* param)
         cout << "Parameters could not be saved." << endl;
     }
 }
-void MainWindow::callBackPoint(int a,void* param)
-{
-    calibrator *MyCal=(calibrator*) param;
-    MyCal->pointCalBegin("Tracker");
-}
-void MainWindow::callBackAgrandar(int a)
-{
-    m_agrandar=true;
-}
-void MainWindow::callBackSetValue(int a,void* param)
-{
-    int* valueToSet=(int*)param;
-    *valueToSet=a;
-}
-void MainWindow::callBackButton(int a,void* param)
-{
-    int* valueToSet=(int*)param;
-    *valueToSet=1;
-}
-void MainWindow::callBackButton0(int a,void* param)
-{
-    int* valueToSet=(int*)param;
-    *valueToSet=0;
-}
+
 void MainWindow::MouseEvWrapper(int event,int x,int y,int flag,void* param)
-{
-    calibrator *MyCal=(calibrator*) param;
-    MyCal->MouseEv(event,x,y,flag);
-}
+{}
 
 int MainWindow::run(){
     m_host=loadParameters(true).c_str();
@@ -566,14 +546,14 @@ void MainWindow::on_setPlaneButton_clicked()
 void MainWindow::on_maskSlider_valueChanged(int value)
 {
     m_espacio = value;
-    callBackAgrandar(value);
+    m_agrandar=true;
 
 }
 
 void MainWindow::on_planeSlider_valueChanged(int value)
 {
     m_movPlano = value;
-    callBackAgrandar(value);
+    m_agrandar=true;
 }
 
 void MainWindow::on_saveButton_clicked()
@@ -585,6 +565,6 @@ void MainWindow::on_calibrationButton_clicked()
 {
     if(!m_CAL)
         return;
-    ui.rgbImage->setFullscreen();
-    callBackPoint(-1, (void*) m_CAL);
+//    ui.rgbImage->setFullscreen();
+    m_CAL->pointCalBegin(ui.rgbImage);
 }

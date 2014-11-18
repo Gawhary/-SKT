@@ -456,7 +456,7 @@ float calibrator::getXY(int x_or_y,int cX,int cY,int wi,int he,bool X_Y,bool fli
         return curY;
     }
 }
-void calibrator::pointCalBegin(const char* win)
+void calibrator::pointCalBegin(CvImageWidgetGL* win)
 {
     calibrandoPoint=true;
     for(int r=0; r<nPoints; r++)
@@ -466,16 +466,17 @@ void calibrator::pointCalBegin(const char* win)
         esqCalID[r]=100;
         numeroRepsCal[r]=0;
     }
-    setWindowProperty(win,CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+//    setWindowProperty(win,CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    if(win) win->setFullscreen();
     zonas.clear();
 }
-void calibrator::pointCal(IplImage* iRGB,CvFont *letra,const char* win)
+void calibrator::pointCal(IplImage* iRGB,CvFont *letra,CvImageWidgetGL* win)
 {
     if(calibrandoPoint)
     {
-        char text[100]="";
-        int n=sprintf(text,"Touch the center of the white circle. Press F to abort.");
-        cvPutText(iRGB,text,cvPoint(20,240),letra,cvScalar(0,0,255));
+//        char text[100]="";
+//        int n=sprintf(text,"Touch the center of the white circle. Press F to abort.");
+//        cvPutText(iRGB,text,cvPoint(20,240),letra,cvScalar(0,0,255));
         for(int r=0; r<nPoints; r++)
         {
             if(esqcP[r])
@@ -532,7 +533,8 @@ void calibrator::pointCal(IplImage* iRGB,CvFont *letra,const char* win)
     }
     if(calibradoPoint)
     {
-        setWindowProperty(win,CV_WND_PROP_FULLSCREEN, CV_WINDOW_NORMAL);
+//        setWindowProperty(win,CV_WND_PROP_FULLSCREEN, CV_WINDOW_NORMAL);
+        if(win) win->setFullscreen(false);
         remapear=false;
         calibradoPoint=false;
         remapearPointCal=true;
