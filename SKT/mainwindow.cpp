@@ -87,55 +87,51 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
-    if(event->type() == QEvent::KeyPress){
+    if(object != ui.rgbImage)
+        return false;
+
+    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+    //        map x and y to image
+    qDebug() << "Mouse Pos: " << mouseEvent->pos();
+    QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
+    int cvEvent;
+    switch (event->type()) {
+    case QEvent::KeyPress:
         if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
             if(ui.rgbImage->isFullScreen()){
                 ui.rgbImage->setFullscreen(false);
                 m_CAL->abortCal();
+                return true;
             }
         }
-    }
-    if (object == ui.rgbImage &&
-            (event->type() == QEvent::MouseButtonPress ||
-            event->type() == QEvent::MouseButtonRelease )) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-//        map x and y to image
-        qDebug() << "Mouse Pos: " << mouseEvent->pos();
-        QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
-        int cvEvent;
-        switch (event->type()) {
-        case QEvent::MouseButtonPress:
-            m_pressedButton = mouseEvent->buttons();
-            if(m_pressedButton&Qt::LeftButton)
-                cvEvent = EVENT_LBUTTONDOWN;
-            else if(m_pressedButton&Qt::RightButton)
-                cvEvent = EVENT_RBUTTONDOWN;
-            else
-                return false;
+        break;
+    case QEvent::MouseButtonPress:
+        m_pressedButton = mouseEvent->buttons();
+        if(m_pressedButton&Qt::LeftButton)
+            cvEvent = EVENT_LBUTTONDOWN;
+        else if(m_pressedButton&Qt::RightButton)
+            cvEvent = EVENT_RBUTTONDOWN;
+        else
             break;
-        case QEvent::MouseButtonRelease:
-            if(m_pressedButton&Qt::LeftButton)
-                cvEvent = EVENT_LBUTTONUP;
-            else if(m_pressedButton&Qt::RightButton)
-                cvEvent = EVENT_RBUTTONUP;
-            else
-                return false;
-            break;
+    case QEvent::MouseButtonRelease:
+        if(m_pressedButton&Qt::LeftButton)
+            cvEvent = EVENT_LBUTTONUP;
+        else if(m_pressedButton&Qt::RightButton)
+            cvEvent = EVENT_RBUTTONUP;
+        break;
 
-//        case QEvent::MouseMove:
-//            cvEvent = EVENT_MOUSEMOVE;
-//            break;
-        default:
-            return false;
-        }
-        // send event
-        int flags = mouseEvent->buttons();
-        m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
-        qDebug() << "Mouse Event filtered.";
+        //        case QEvent::MouseMove:
+        //            cvEvent = EVENT_MOUSEMOVE;
+        //            break;
+    default:
         return true;
     }
-    else
-        return false;
+    // send event
+    int flags = mouseEvent->buttons();
+    m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
+    qDebug() << "Mouse Event filtered.";
+    return true; // don't send events to rgbImage widget
+
 }
 
 void MainWindow::affineWarperAndMixer(CvMat* warp,IplImage* iRGB,IplImage* aux1,IplImage* aux2,float alpha,IplImage* gray)

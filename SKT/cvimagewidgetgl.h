@@ -6,9 +6,36 @@
 #include <QGLWidget>
 #include <QVBoxLayout>
 #include <QImage>
+#include <QLayout>
 #include <QDebug>
 #include <cv.h>
 #include "cv.h"
+
+class CvImageWidgetGL;
+
+class CvImageDockableWidgetGL : public QWidget{
+    Q_OBJECT
+
+public:
+    explicit CvImageDockableWidgetGL(QWidget *parent = 0);
+
+    bool isFullScreen();
+    QPixmap toPixmap(IplImage *);
+    void showImage(IplImage *pImg, bool color = true);
+    void showImage(cv::Mat img, bool col = true);
+    QPoint mapToImage(const QPoint &pointToMap);
+
+public slots:
+    void setFullscreen(bool fullscreen = true);
+
+protected:
+    virtual bool eventFilter(QObject *, QEvent *event);
+private:
+    CvImageWidgetGL *m_imageWidget;
+    bool m_isFullscreen;
+    QLayout *m_layout;
+};
+
 class CvImageWidgetGL : public QGLWidget
 {
     Q_OBJECT
@@ -20,21 +47,17 @@ public:
     void showImage(IplImage *, bool color = true);
     void showImage(cv::Mat img, bool col = true);
     QPoint mapToImage(const QPoint &pointToMap);
-    void setFullscreen(bool fullscreen = true);
-    bool isFullScreen();
 
 protected:
     virtual void paintGL();
     virtual void initializeGL();
     virtual void resizeGL(int width, int height);
-    void keyPressEvent(QKeyEvent *event);
 private:
     cv::Mat image;
     bool useglfix;
     bool color;
     float widthI,heightI;
     bool isResized;
-    bool m_isFullscreen;
     QSize m_imageSize;
 }; 
 

@@ -136,8 +136,9 @@ bool calibrator::zoneCal(IplImage *iRGB,IplImage* maskZona,IplImage* maskBack,Cv
     {
         char text[100]="";
         char text2[100]="";
-        int n=sprintf(text,"Points: 0->TopLeft/1->TopRight/2->BotRight/3->BotLeft");
-        cvPutText(iRGB,text,cvPoint(40,40),letra,cvScalar(0,0,255));
+        int n;
+//        n=sprintf(text,"Points: 0->TopLeft/1->TopRight/2->BotRight/3->BotLeft");
+//        cvPutText(iRGB,text,cvPoint(40,40),letra,cvScalar(0,0,255));
         int zonaActual=0;
         for(int r=0; r<4; r++)
         {
@@ -456,7 +457,7 @@ float calibrator::getXY(int x_or_y,int cX,int cY,int wi,int he,bool X_Y,bool fli
         return curY;
     }
 }
-void calibrator::pointCalBegin(CvImageWidgetGL* win)
+void calibrator::pointCalBegin(CvImageDockableWidgetGL* win)
 {
     calibrandoPoint=true;
     for(int r=0; r<nPoints; r++)
@@ -470,7 +471,7 @@ void calibrator::pointCalBegin(CvImageWidgetGL* win)
     if(win) win->setFullscreen();
     zonas.clear();
 }
-void calibrator::pointCal(IplImage* iRGB,CvFont *letra,CvImageWidgetGL* win)
+void calibrator::pointCal(IplImage* iRGB,CvFont *letra,CvImageDockableWidgetGL* win)
 {
     if(calibrandoPoint)
     {

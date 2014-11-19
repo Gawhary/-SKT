@@ -36,7 +36,7 @@ public:
     QGridLayout *gridLayout;
     QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout_2;
-    CvImageWidgetGL *rgbImage;
+    CvImageDockableWidgetGL *rgbImage;
     CvImageWidgetGL *toBlobsImage;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
@@ -80,7 +80,7 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(10);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        rgbImage = new CvImageWidgetGL(container);
+        rgbImage = new CvImageDockableWidgetGL(container);
         rgbImage->setObjectName(QString::fromUtf8("rgbImage"));
         rgbImage->setMinimumSize(QSize(200, 200));
 

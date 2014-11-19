@@ -1,5 +1,8 @@
 #include "cvimagewidgetgl.h"
 #include <QKeyEvent>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QScreen>
 #include <qdebug.h>
 using namespace cv;
 
@@ -86,34 +89,56 @@ QPoint CvImageWidgetGL::mapToImage(const QPoint& pointToMap)
     return mapped;
 }
 
-void CvImageWidgetGL::setFullscreen(bool fullscreen)
+void CvImageDockableWidgetGL::setFullscreen(bool fullscreen)
 {
-    return; // ToDo: delete
+//    return; // ToDo: delete
     static Qt::WindowFlags origWindowFlags;
     static QSize orgSize;
     static QWidget *orgParent;
     if(fullscreen)
     {
-        origWindowFlags = this->windowFlags();
-        orgSize = this->size();
-         this->setParent(0);
-         this->setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
-         this->showMaximized();
-        setFocus(Qt::ActiveWindowFocusReason);
+//        m_imageWidget->hide();
+        origWindowFlags = m_imageWidget->windowFlags();
+        orgSize = m_imageWidget->size();
+        m_layout->removeWidget(m_imageWidget);
+        m_imageWidget->setParent(0);
+//         m_imageWidget->setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+        m_imageWidget->showFullScreen();
+        QApplication::setActiveWindow(m_imageWidget);
     }
     else
     {
-        this->setParent(orgParent);
-        this ->resize(orgSize);
-        this->overrideWindowFlags(origWindowFlags);
-        this->show();
-        clearFocus();
+//        m_imageWidget->hide();
+        m_imageWidget->setParent(orgParent);
+        m_layout->addWidget(m_imageWidget);
+        m_imageWidget->resize(orgSize);
+//        m_imageWidget->overrideWindowFlags(origWindowFlags);
+        m_imageWidget->showNormal();
     }
 }
 
-bool CvImageWidgetGL::isFullScreen(){
+CvImageDockableWidgetGL::CvImageDockableWidgetGL(QWidget *parent)
+{
+    m_layout = new QGridLayout(this);
+    m_layout->setSpacing(0);
+    m_layout->setMargin(0);
+    m_imageWidget = new CvImageWidgetGL(this);
+    m_layout->addWidget(m_imageWidget);
+    setLayout(m_layout);
+    m_imageWidget->installEventFilter(this);
+}
+
+bool CvImageDockableWidgetGL::isFullScreen(){
     return m_isFullscreen;
 }
+
+QPixmap CvImageDockableWidgetGL::toPixmap(IplImage *img){return m_imageWidget->toPixmap(img);}
+
+void CvImageDockableWidgetGL::showImage(IplImage *pImg, bool color){m_imageWidget->showImage(pImg, color);}
+
+void CvImageDockableWidgetGL::showImage(Mat img, bool col){m_imageWidget->showImage(img, col);}
+
+QPoint CvImageDockableWidgetGL::mapToImage(const QPoint &pointToMap){return m_imageWidget->mapToImage(pointToMap);}
 
 
 
@@ -180,13 +205,17 @@ void CvImageWidgetGL::resizeGL(int width, int height)
     isResized=true;
 }
 
-void CvImageWidgetGL::keyPressEvent(QKeyEvent *event)
+bool CvImageDockableWidgetGL::eventFilter(QObject *obj, QEvent *event)
 {
-    if(event->key() == Qt::Key_Escape){
-        if(m_isFullscreen){
-            setFullscreen(false);
+    if(obj == m_imageWidget && event->type() == QEvent::KeyPress){
+        if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
+            if(m_isFullscreen){
+                setFullscreen(false);
+                return true;
+            }
         }
     }
+    return false;
 }
 
 

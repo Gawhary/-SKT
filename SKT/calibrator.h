@@ -67,8 +67,8 @@ public:
     bool zoneCal(IplImage *iRGB,IplImage* maskZona,IplImage* maskBack,CvFont *letra,int maskMult);
     void enlargeMask(IplImage* maskZona,int maskMul);
     void drawZone(bool show,IplImage* iRGB);
-    void pointCalBegin(CvImageWidgetGL *win);
-    void pointCal(IplImage* iRGB, CvFont *letra, CvImageWidgetGL *win);
+    void pointCalBegin(CvImageDockableWidgetGL *win);
+    void pointCal(IplImage* iRGB, CvFont *letra, CvImageDockableWidgetGL *win);
     void pointCalUpdate(int ID,float x, float y,double profundidad);
     void pointCalNew(int ID,float x, float y,double profundidad);
     void pointCalRemove(int ID);

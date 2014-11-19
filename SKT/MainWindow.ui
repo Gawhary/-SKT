@@ -23,7 +23,7 @@
          <number>10</number>
         </property>
         <item>
-         <widget class="CvImageWidgetGL" name="rgbImage" native="true">
+         <widget class="CvImageDockableWidgetGL" name="rgbImage" native="true">
           <property name="minimumSize">
            <size>
             <width>200</width>
@@ -300,6 +300,12 @@
    <class>QxtSpanSlider</class>
    <extends>QSlider</extends>
    <header>qxtspanslider.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CvImageDockableWidgetGL</class>
+   <extends>QWidget</extends>
+   <header>cvimagewidgetgl.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
