@@ -98,6 +98,7 @@ void calibrator::MouseEv(int event,int x,int y,int flag)
 {
     if(event==CV_EVENT_LBUTTONDOWN)
     {
+        return;
     }
     if(event==CV_EVENT_LBUTTONUP)
     {

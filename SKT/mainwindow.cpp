@@ -89,48 +89,57 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
     if(object != ui.rgbImage)
         return false;
+    if( event->type() ==  QEvent::KeyPress){
+        if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
+            if(ui.rgbImage->isFullScreen())
+                ui.rgbImage->setFullscreen(false);
+            if(m_CAL) m_CAL->abortCal();
+            return true;
 
+        }
+        return false;
+    }
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
     //        map x and y to image
     qDebug() << "Mouse Pos: " << mouseEvent->pos();
     QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
     int cvEvent;
-    switch (event->type()) {
-    case QEvent::KeyPress:
-        if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
-            if(ui.rgbImage->isFullScreen()){
-                ui.rgbImage->setFullscreen(false);
-                m_CAL->abortCal();
-                return true;
-            }
-        }
-        break;
-    case QEvent::MouseButtonPress:
-        m_pressedButton = mouseEvent->buttons();
-        if(m_pressedButton&Qt::LeftButton)
-            cvEvent = EVENT_LBUTTONDOWN;
-        else if(m_pressedButton&Qt::RightButton)
-            cvEvent = EVENT_RBUTTONDOWN;
-        else
-            break;
-    case QEvent::MouseButtonRelease:
-        if(m_pressedButton&Qt::LeftButton)
-            cvEvent = EVENT_LBUTTONUP;
-        else if(m_pressedButton&Qt::RightButton)
-            cvEvent = EVENT_RBUTTONUP;
-        break;
 
-        //        case QEvent::MouseMove:
-        //            cvEvent = EVENT_MOUSEMOVE;
-        //            break;
-    default:
+    if( event->type() == QEvent::MouseButtonRelease ||
+            event->type() == QEvent::MouseButtonPress){
+        switch (event->type()) {
+
+        case QEvent::MouseButtonPress:
+            m_pressedButton = mouseEvent->buttons();
+            if(m_pressedButton&Qt::LeftButton)
+                cvEvent = EVENT_LBUTTONDOWN;
+            else if(m_pressedButton&Qt::RightButton)
+                cvEvent = EVENT_RBUTTONDOWN;
+            else
+                return false;
+                break;
+        case QEvent::MouseButtonRelease:
+            if(m_pressedButton&Qt::LeftButton)
+                cvEvent = EVENT_LBUTTONUP;
+            else if(m_pressedButton&Qt::RightButton)
+                cvEvent = EVENT_RBUTTONUP;
+            else
+                return false;
+            break;
+
+            //        case QEvent::MouseMove:
+            //            cvEvent = EVENT_MOUSEMOVE;
+            //            break;
+        default:
+            return false;
+        }
+        // send event
+        int flags = mouseEvent->buttons();
+        if(m_CAL) m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
+        qDebug() << "Mouse Event sent, Event: " << cvEvent;
         return true;
     }
-    // send event
-    int flags = mouseEvent->buttons();
-    m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
-    qDebug() << "Mouse Event filtered.";
-    return true; // don't send events to rgbImage widget
+    return false;
 
 }
 
@@ -410,7 +419,7 @@ int MainWindow::run(){
             //////////////////////////////////////////////////////////
             /*Point calibration.*/
 
-//            CAL->pointCal(iRGB,letra,"Tracker");
+            //            CAL->pointCal(iRGB,letra,"Tracker");
             ///////////////////////////////////////////////////////////////////////
             /*This part calculates the difference between background (or the simulated plane) and new depth image
              *and normalizes the difference according to depth. Then a min and max threeshold
@@ -561,6 +570,6 @@ void MainWindow::on_calibrationButton_clicked()
 {
     if(!m_CAL)
         return;
-//    ui.rgbImage->setFullscreen();
+    //    ui.rgbImage->setFullscreen();
     m_CAL->pointCalBegin(ui.rgbImage);
 }

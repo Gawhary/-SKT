@@ -6,6 +6,18 @@
 #include <qdebug.h>
 using namespace cv;
 
+CvImageDockableWidgetGL::CvImageDockableWidgetGL(QWidget *parent)
+{
+    m_imageWidget = false;
+    m_layout = new QGridLayout(this);
+    m_layout->setSpacing(0);
+    m_layout->setMargin(0);
+    m_imageWidget = new CvImageWidgetGL(this);
+    m_layout->addWidget(m_imageWidget);
+    setLayout(m_layout);
+    m_imageWidget->installEventFilter(this);
+}
+
 // Constructor
 CvImageWidgetGL::CvImageWidgetGL(QWidget *parent)
     : QGLWidget(parent)
@@ -22,6 +34,16 @@ CvImageWidgetGL::CvImageWidgetGL(QWidget *parent)
         image.create(1024,1024,CV_8UC3);
     }
 }
+
+bool CvImageDockableWidgetGL::isFullScreen(){
+    return m_isFullscreen;
+}
+
+void CvImageDockableWidgetGL::showImage(IplImage *pImg, bool color){m_imageWidget->showImage(pImg, color);}
+
+void CvImageDockableWidgetGL::showImage(Mat img, bool col){m_imageWidget->showImage(img, col);}
+
+QPoint CvImageDockableWidgetGL::mapToImage(const QPoint &pointToMap){return m_imageWidget->mapToImage(pointToMap);}
 
 CvImageWidgetGL::~CvImageWidgetGL()
 {
@@ -115,30 +137,25 @@ void CvImageDockableWidgetGL::setFullscreen(bool fullscreen)
 //        m_imageWidget->overrideWindowFlags(origWindowFlags);
         m_imageWidget->showNormal();
     }
-}
-
-CvImageDockableWidgetGL::CvImageDockableWidgetGL(QWidget *parent)
-{
-    m_layout = new QGridLayout(this);
-    m_layout->setSpacing(0);
-    m_layout->setMargin(0);
-    m_imageWidget = new CvImageWidgetGL(this);
-    m_layout->addWidget(m_imageWidget);
-    setLayout(m_layout);
-    m_imageWidget->installEventFilter(this);
-}
-
-bool CvImageDockableWidgetGL::isFullScreen(){
-    return m_isFullscreen;
+    m_isFullscreen = fullscreen;
 }
 
 QPixmap CvImageDockableWidgetGL::toPixmap(IplImage *img){return m_imageWidget->toPixmap(img);}
 
-void CvImageDockableWidgetGL::showImage(IplImage *pImg, bool color){m_imageWidget->showImage(pImg, color);}
 
-void CvImageDockableWidgetGL::showImage(Mat img, bool col){m_imageWidget->showImage(img, col);}
-
-QPoint CvImageDockableWidgetGL::mapToImage(const QPoint &pointToMap){return m_imageWidget->mapToImage(pointToMap);}
+bool CvImageDockableWidgetGL::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj != m_imageWidget)
+        return false;
+    if(event->type() == QEvent::Close)
+        exit(0);
+    if( event->type() == QEvent::KeyPress)
+    {
+        QCoreApplication::sendEvent(this, event);
+        return true;
+    }
+    return false;
+}
 
 
 
@@ -203,19 +220,6 @@ void CvImageWidgetGL::resizeGL(int width, int height)
     glLoadIdentity();
     glOrtho(-width, width, height, -height, -1.0, 1.0);
     isResized=true;
-}
-
-bool CvImageDockableWidgetGL::eventFilter(QObject *obj, QEvent *event)
-{
-    if(obj == m_imageWidget && event->type() == QEvent::KeyPress){
-        if( static_cast<QKeyEvent*>(event)->key() == Qt::Key_Escape){
-            if(m_isFullscreen){
-                setFullscreen(false);
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 
