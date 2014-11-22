@@ -63,10 +63,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_pressedButton = Qt::NoButton;
     ui.setupUi(this);
     ui.distSlider->setMaximum(10000);
-    ui.distSlider->setMinimum(0);
     ui.distSlider->setUpperValue(230);
     ui.distSlider->setLowerValue(55);
+    ui.image_depthSlider->setMaximum(100);
+    ui.MinSlider->setMaximum(10000);
     ui.MinSlider->setValue(80);
+    ui.planeSlider->setMaximum(4000);
+    ui.maskSlider->setMaximum(1000);
     ui.image_depthSlider->setValue(100);
 
     ui.rgbImage->installEventFilter(this); // to capture mouse events
@@ -101,7 +104,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
     }
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
     //        map x and y to image
-    qDebug() << "Mouse Pos: " << mouseEvent->pos();
+//    qDebug() << "Mouse Pos: " << mouseEvent->pos();
     QPoint mapped = ui.rgbImage->mapToImage(mouseEvent->pos());
     int cvEvent;
 
@@ -136,7 +139,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
         // send event
         int flags = mouseEvent->buttons();
         if(m_CAL) m_CAL->MouseEv(cvEvent, mapped.x(), mapped.y(), flags);
-        qDebug() << "Mouse Event sent, Event: " << cvEvent;
+//        qDebug() << "Mouse Event sent, Event: " << cvEvent;
         return true;
     }
     return false;
@@ -347,7 +350,6 @@ int MainWindow::run(){
     m_inicio=clock();
     while(!m_exit)
     {
-        ////////////////////////////////////////
 
         //Zone calibration starting point.
         if(m_calZona==1)
@@ -419,7 +421,7 @@ int MainWindow::run(){
             //////////////////////////////////////////////////////////
             /*Point calibration.*/
 
-            //            CAL->pointCal(iRGB,letra,"Tracker");
+            m_CAL->pointCal(iRGB,letra,ui.rgbImage);
             ///////////////////////////////////////////////////////////////////////
             /*This part calculates the difference between background (or the simulated plane) and new depth image
              *and normalizes the difference according to depth. Then a min and max threeshold

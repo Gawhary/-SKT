@@ -103,7 +103,7 @@ QPoint CvImageWidgetGL::mapToImage(const QPoint& pointToMap)
     if((ww == 0 || wh == 0))
     {
         return QPoint();
-        qDebug() << "################################";
+//        qDebug() << "################################";
     }
     QPoint mapped(
                 (pointToMap.x() / ww)*m_imageSize.width(),
