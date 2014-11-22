@@ -46,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_showFondo=0;
     m_showMask=0;
     m_showPlano=0;
-    m_espacio=100;
     m_agrandar=false;
     m_host;
     m_port=3333;
@@ -54,7 +53,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_numPoints=5;
     m_auto2=0;
     m_framesAuto=0;
-    m_movPlano=2000;
     m_escala=6000;
     m_fisheye=0;
     m_k=0;
@@ -65,11 +63,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui.distSlider->setMaximum(10000);
     ui.distSlider->setUpperValue(230);
     ui.distSlider->setLowerValue(55);
-    ui.image_depthSlider->setMaximum(100);
     ui.MinSlider->setMaximum(10000);
     ui.MinSlider->setValue(80);
     ui.planeSlider->setMaximum(4000);
+    ui.planeSlider->setValue(2000);
     ui.maskSlider->setMaximum(1000);
+    ui.maskSlider->setValue(100);
+    ui.image_depthSlider->setMaximum(100);
     ui.image_depthSlider->setValue(100);
 
     ui.rgbImage->installEventFilter(this); // to capture mouse events
@@ -398,7 +398,7 @@ int MainWindow::run(){
 
             /*Calibration for valid zone. This reduces noise by selecting the interaction zone.
              *It also calibrates valid range for the output coordinates of the blobs.*/
-            if(m_CAL->zoneCal(iRGB,maskZona,maskBack,letra,m_espacio))
+            if(m_CAL->zoneCal(iRGB,maskZona,maskBack,letra,ui.maskSlider->value()))
             {
                 m_showMask=1;
                 if(m_method == METHOD_PLANE){
@@ -411,8 +411,8 @@ int MainWindow::run(){
             ////ZONE ENLARGMENT AND PLANE MOVER FOR PLANE METHOD TO USE EVERY POINT////
             if(m_agrandar)
             {
-                VP->SetPl(2,(double)(VP->GetPl(3)*((double)m_movPlano/1000-1.0)));
-                m_CAL->enlargeMask(maskZona,m_espacio);
+                VP->SetPl(2,(double)(VP->GetPl(3)*((double)ui.planeSlider->value()/1000-1.0)));
+                m_CAL->enlargeMask(maskZona,ui.maskSlider->value());
                 m_agrandar=false;
                 m_showPlano=1;
                 cvSetZero(plano);
@@ -552,14 +552,12 @@ void MainWindow::on_setPlaneButton_clicked()
 
 void MainWindow::on_maskSlider_valueChanged(int value)
 {
-    m_espacio = value;
     m_agrandar=true;
 
 }
 
 void MainWindow::on_planeSlider_valueChanged(int value)
 {
-    m_movPlano = value;
     m_agrandar=true;
 }
 
