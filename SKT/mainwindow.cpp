@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_CAL=NULL;
     m_pressedButton = Qt::NoButton;
     ui.setupUi(this);
-    ui.distSlider->setMaximum(10000);
+    ui.distSlider->setMaximum(1500);
     ui.distSlider->setUpperValue(230);
     ui.distSlider->setLowerValue(55);
     ui.MinSlider->setMaximum(10000);
