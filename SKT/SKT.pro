@@ -4,11 +4,11 @@
 
 TEMPLATE = app
 TARGET = SKT
-DESTDIR = ../Release_Qt
+DESTDIR = ../Release
 QT += core gui opengl
-CONFIG += release console
+CONFIG += release
 CONFIG -= debug
-DEFINES += _WIN32_WINNT=0x0501 _CONSOLE QT_OPENGL_LIB
+DEFINES += _WIN32_WINNT=0x0501 QT_OPENGL_LIB
 SolutionDir = ..
 INCLUDEPATH += $(SolutionDir)/SKT \
     $${SolutionDir}/SKT/include/TUIO \
